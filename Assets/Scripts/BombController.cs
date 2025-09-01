@@ -7,7 +7,7 @@ public class BombController : MonoBehaviour
     [Header("Bomb")]
     public KeyCode inputKey = KeyCode.LeftShift;
     public GameObject bombPrefab;
-    public float bombFuseTime = 3f;
+    public float bombFuseTime = 2f;
     public int bombAmount = 1;
     private int bombsRemaining;
 
@@ -15,7 +15,7 @@ public class BombController : MonoBehaviour
     public Explosion explosionPrefab;
     public LayerMask explosionLayerMask;
     public float explosionDuration = 1f;
-    public int explosionRadius = 1;
+    public int explosionRadius = 2;
 
     [Header("Destructible")]
     public Tilemap destructibleTiles;
@@ -28,7 +28,8 @@ public class BombController : MonoBehaviour
 
     private void Update()
     {
-        if (bombsRemaining > 0 && Input.GetKeyDown(inputKey)) {
+        if (bombsRemaining > 0 && Input.GetKeyDown(inputKey))
+        {
             StartCoroutine(PlaceBomb());
         }
     }
@@ -39,33 +40,22 @@ public class BombController : MonoBehaviour
         position.x = Mathf.Round(position.x);
         position.y = Mathf.Round(position.y);
 
-        GameObject bomb = Instantiate(bombPrefab, position, Quaternion.identity);
+        GameObject bombObj = Instantiate(bombPrefab, position, Quaternion.identity);
         bombsRemaining--;
 
-        yield return new WaitForSeconds(bombFuseTime);
+        Bomb bomb = bombObj.GetComponent<Bomb>();
+        bomb.Init(bombFuseTime, explosionRadius, explosionDuration, explosionPrefab, explosionLayerMask, destructibleTiles, destructiblePrefab);
 
-        position = bomb.transform.position;
-        position.x = Mathf.Round(position.x);
-        position.y = Mathf.Round(position.y);
+        while (bombObj != null)
+            yield return null;
 
-        Explosion explosion = Instantiate(explosionPrefab, position, Quaternion.identity);
-        explosion.SetActiveRenderer(explosion.start);
-        explosion.DestroyAfter(explosionDuration);
-
-        Explode(position, Vector2.up, explosionRadius);
-        Explode(position, Vector2.down, explosionRadius);
-        Explode(position, Vector2.left, explosionRadius);
-        Explode(position, Vector2.right, explosionRadius);
-
-        Destroy(bomb);
         bombsRemaining++;
     }
 
     private void Explode(Vector2 position, Vector2 direction, int length)
     {
-        if (length <= 0) {
+        if (length <= 0)
             return;
-        }
 
         position += direction;
 
@@ -103,9 +93,9 @@ public class BombController : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Bomb")) {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Bomb"))
+        {
             other.isTrigger = false;
         }
     }
-
 }

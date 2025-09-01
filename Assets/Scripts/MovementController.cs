@@ -6,6 +6,7 @@ public class MovementController : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 direction = Vector2.down;
     public float speed = 5f;
+    public bool canKickBomb = false;
 
     [Header("Input")]
     public KeyCode inputUp = KeyCode.W;
@@ -29,15 +30,24 @@ public class MovementController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKey(inputUp)) {
+        if (Input.GetKey(inputUp))
+        {
             SetDirection(Vector2.up, spriteRendererUp);
-        } else if (Input.GetKey(inputDown)) {
+        }
+        else if (Input.GetKey(inputDown))
+        {
             SetDirection(Vector2.down, spriteRendererDown);
-        } else if (Input.GetKey(inputLeft)) {
+        }
+        else if (Input.GetKey(inputLeft))
+        {
             SetDirection(Vector2.left, spriteRendererLeft);
-        } else if (Input.GetKey(inputRight)) {
+        }
+        else if (Input.GetKey(inputRight))
+        {
             SetDirection(Vector2.right, spriteRendererRight);
-        } else {
+        }
+        else
+        {
             SetDirection(Vector2.zero, activeSpriteRenderer);
         }
     }
@@ -65,7 +75,8 @@ public class MovementController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Explosion")) {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Explosion"))
+        {
             DeathSequence();
         }
     }
@@ -90,4 +101,8 @@ public class MovementController : MonoBehaviour
         GameManager.Instance.CheckWinState();
     }
 
+    public Vector2 GetMoveDirection()
+    {
+        return new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+    }
 }

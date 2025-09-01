@@ -1,0 +1,1669 @@
+fileFormatVersion: 2
+guid: 9e4e2c919cb743640a961b04bd4b35f6
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 7836484546070255520
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_0
+  - first:
+      213: 7442840335361727164
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_1
+  - first:
+      213: -3179385639018315253
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_2
+  - first:
+      213: -8868486026276474952
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_3
+  - first:
+      213: 5932264726939310897
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_4
+  - first:
+      213: 8141298684801399038
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_5
+  - first:
+      213: 9051596598265634129
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_6
+  - first:
+      213: 721822154380467241
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_7
+  - first:
+      213: 944636532419139330
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_8
+  - first:
+      213: -7747621857236704249
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_9
+  - first:
+      213: -7571337587159141761
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_10
+  - first:
+      213: -6045004849099052818
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_11
+  - first:
+      213: -901915258759336587
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_12
+  - first:
+      213: -3333182933985855867
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_13
+  - first:
+      213: -3124995033617063557
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_14
+  - first:
+      213: 8718895254787217854
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_15
+  - first:
+      213: -3148583506325153044
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_16
+  - first:
+      213: -4035962628521006791
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_17
+  - first:
+      213: -9219598659486432619
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_18
+  - first:
+      213: 7680262113806316848
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_19
+  - first:
+      213: -7639777330761933402
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_20
+  - first:
+      213: 2300972060796463388
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_21
+  - first:
+      213: 648131943562376824
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_22
+  - first:
+      213: -5345826567556388289
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_23
+  - first:
+      213: -2218558599819934430
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_24
+  - first:
+      213: 3662565984943130306
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_25
+  - first:
+      213: 3140264299674688160
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_26
+  - first:
+      213: 5237584231763065317
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_27
+  - first:
+      213: 3248991429124561718
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_28
+  - first:
+      213: -6628029155896415529
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_29
+  - first:
+      213: -1643451265676479931
+    second: ItemKickBomb
+  - first:
+      213: -2781835559069980869
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_31
+  - first:
+      213: 2217165779553562499
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_32
+  - first:
+      213: 5066621606400887007
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_33
+  - first:
+      213: -148807301320672464
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_34
+  - first:
+      213: -924775679239498288
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_35
+  - first:
+      213: 816509003123776483
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_36
+  - first:
+      213: -8657411505028561339
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_37
+  - first:
+      213: 157152407730057301
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_38
+  - first:
+      213: 218197980243087245
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_39
+  - first:
+      213: 6922575197065578293
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_40
+  - first:
+      213: 7221014108843783369
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_41
+  - first:
+      213: 4207836506136822452
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_42
+  - first:
+      213: 715196290623964530
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_43
+  - first:
+      213: 1793211709788100945
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_44
+  - first:
+      213: -1073984845413341049
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_45
+  - first:
+      213: 7774472667434965741
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_46
+  - first:
+      213: 1151100501289169178
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_47
+  - first:
+      213: -40115024061285080
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_48
+  - first:
+      213: -5350068205517981615
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_49
+  - first:
+      213: 1915994530548027362
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_50
+  - first:
+      213: -7992841130065820935
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_51
+  - first:
+      213: 2498824943589955555
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_52
+  - first:
+      213: 3199793457149548541
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_53
+  - first:
+      213: 4189317358595722998
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_54
+  - first:
+      213: -3180168144423456081
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_55
+  - first:
+      213: -2769563667530522372
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_56
+  - first:
+      213: 8638067352395466308
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_57
+  - first:
+      213: -1479282080643635217
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_58
+  - first:
+      213: -7969777567096898107
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_59
+  - first:
+      213: -2894569542479003730
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_60
+  - first:
+      213: -598233138717355965
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_61
+  - first:
+      213: 2949237825231832647
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_62
+  - first:
+      213: 7705915253333377181
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_63
+  - first:
+      213: 6022763398096573380
+    second: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_64
+  externalObjects: {}
+  serializedVersion: 12
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 813
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0a71b58dc29c0cc60800000000000000
+      internalID: 7836484546070255520
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_1
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 813
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cba5f25e9d74a4760800000000000000
+      internalID: 7442840335361727164
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_2
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 813
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b02c55e3b9d80e3d0800000000000000
+      internalID: -3179385639018315253
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_3
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 813
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8bf664442fecce480800000000000000
+      internalID: -8868486026276474952
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_4
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 813
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 13b1cc2b653a35250800000000000000
+      internalID: 5932264726939310897
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_5
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 749
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ef831f5f404bbf070800000000000000
+      internalID: 8141298684801399038
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_6
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 749
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 15dd1c1162bbd9d70800000000000000
+      internalID: 9051596598265634129
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_7
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 749
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 92cdadecc6d640a00800000000000000
+      internalID: 721822154380467241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_8
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 749
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 20713bcdbe50c1d00800000000000000
+      internalID: 944636532419139330
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_9
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 749
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 704aa5138faea7490800000000000000
+      internalID: -7747621857236704249
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_10
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 685
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f72f0d244943de690800000000000000
+      internalID: -7571337587159141761
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_11
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 685
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ee8efe71e14db1ca0800000000000000
+      internalID: -6045004849099052818
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_12
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 685
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 57d2528c9d0cb73f0800000000000000
+      internalID: -901915258759336587
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_13
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 685
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 586f06018c72eb1d0800000000000000
+      internalID: -3333182933985855867
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_14
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 685
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b712568e299c1a4d0800000000000000
+      internalID: -3124995033617063557
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_15
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 621
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eb95e6f1a0dbff870800000000000000
+      internalID: 8718895254787217854
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_16
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 621
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cead5df9bfbfd44d0800000000000000
+      internalID: -3148583506325153044
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_17
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 621
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 939e0407f516df7c0800000000000000
+      internalID: -4035962628521006791
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_18
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 621
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 592c4a1edd76d0080800000000000000
+      internalID: -9219598659486432619
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_19
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 621
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 035f05363b5c59a60800000000000000
+      internalID: 7680262113806316848
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_20
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 557
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6ad5ad4befe0af590800000000000000
+      internalID: -7639777330761933402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_21
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 557
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c192fd1f5e1beef10800000000000000
+      internalID: 2300972060796463388
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_22
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 557
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8767e979190aef800800000000000000
+      internalID: 648131943562376824
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_23
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 557
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f3aa4f96f0fcfc5b0800000000000000
+      internalID: -5345826567556388289
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_24
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 557
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 225485835b81631e0800000000000000
+      internalID: -2218558599819934430
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_25
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 493
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2c6c6f2bb5c04d230800000000000000
+      internalID: 3662565984943130306
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_26
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 493
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0aa53f22eb5749b20800000000000000
+      internalID: 3140264299674688160
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_27
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 493
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5e9bc6fdb13afa840800000000000000
+      internalID: 5237584231763065317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_28
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 493
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 63b124bad7cb61d20800000000000000
+      internalID: 3248991429124561718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_29
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 493
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7daacd979928404a0800000000000000
+      internalID: -6628029155896415529
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ItemKickBomb
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 457
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 542ffaff7c94139e0800000000000000
+      internalID: -1643451265676479931
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_31
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 429
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b37651e3c4fe469d0800000000000000
+      internalID: -2781835559069980869
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_32
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 429
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 38f217a8784f4ce10800000000000000
+      internalID: 2217165779553562499
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_33
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 429
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fd808d4c181405640800000000000000
+      internalID: 5066621606400887007
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_34
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 429
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 03bfbc04c845fedf0800000000000000
+      internalID: -148807301320672464
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_35
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 365
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0d5520e5b698a23f0800000000000000
+      internalID: -924775679239498288
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_36
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 365
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3ebd91fbc92d45b00800000000000000
+      internalID: 816509003123776483
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_37
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 365
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5468468ea12bad780800000000000000
+      internalID: -8657411505028561339
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_38
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 365
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 550f85e38415e2200800000000000000
+      internalID: 157152407730057301
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_39
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 365
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d8fc81f28e1370300800000000000000
+      internalID: 218197980243087245
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_40
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 301
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5370600e67de11060800000000000000
+      internalID: 6922575197065578293
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_41
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 247
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9c4b7bbc212363460800000000000000
+      internalID: 7221014108843783369
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_42
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 301
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4b2c43d120d356a30800000000000000
+      internalID: 4207836506136822452
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_43
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 301
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 275815fac33ece900800000000000000
+      internalID: 715196290623964530
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_44
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 301
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1599df89c84c2e810800000000000000
+      internalID: 1793211709788100945
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_45
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 237
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7882cfa29707811f0800000000000000
+      internalID: -1073984845413341049
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_46
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 237
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dead17a33b974eb60800000000000000
+      internalID: 7774472667434965741
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_47
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 237
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a117d10aec789ff00800000000000000
+      internalID: 1151100501289169178
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_48
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 237
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 82dbba0299b717ff0800000000000000
+      internalID: -40115024061285080
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_49
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 237
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1583dfd105db0c5b0800000000000000
+      internalID: -5350068205517981615
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_50
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 173
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2ef08e8cfdaf69a10800000000000000
+      internalID: 1915994530548027362
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_51
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 173
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9f28b401759b31190800000000000000
+      internalID: -7992841130065820935
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_52
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 173
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3e7909efb0c9da220800000000000000
+      internalID: 2498824943589955555
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_53
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 173
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: df794003233f76c20800000000000000
+      internalID: 3199793457149548541
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_54
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 173
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6fec97211f1732a30800000000000000
+      internalID: 4189317358595722998
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_55
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 109
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fa270a10ce5cdd3d0800000000000000
+      internalID: -3180168144423456081
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_56
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 109
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cf0e306a4888099d0800000000000000
+      internalID: -2769563667530522372
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_57
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 109
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4464e659d7490e770800000000000000
+      internalID: 8638067352395466308
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_58
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 109
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fe7a2a409c8887be0800000000000000
+      internalID: -1479282080643635217
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_59
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 109
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5cdff464789a56190800000000000000
+      internalID: -7969777567096898107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_60
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 45
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eafbfd2565c64d7d0800000000000000
+      internalID: -2894569542479003730
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_61
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 45
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 34092e14126a2b7f0800000000000000
+      internalID: -598233138717355965
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_62
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 45
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 746c6132d2ccde820800000000000000
+      internalID: 2949237825231832647
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_63
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 45
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d9043306819e0fa60800000000000000
+      internalID: 7705915253333377181
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PlayStation - Bomberman Party Edition - Miscellaneous - Miscellaneous_64
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 45
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4c355cd8667259350800000000000000
+      internalID: 6022763398096573380
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
