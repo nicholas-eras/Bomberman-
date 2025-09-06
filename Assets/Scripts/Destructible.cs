@@ -4,7 +4,7 @@ public class Destructible : MonoBehaviour
 {
     public float destructionTime = 1f;
     [Range(0f, 1f)]
-    public float itemSpawnChance = 0.2f;
+    public float itemSpawnChance = 1f;
     public GameObject[] spawnableItems;
 
     private void Start()
@@ -14,7 +14,7 @@ public class Destructible : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (spawnableItems.Length > 0 && Random.value < itemSpawnChance)
+        if (spawnableItems.Length > 0)
         {
             int randomIndex = Random.Range(0, spawnableItems.Length);
             Instantiate(spawnableItems[randomIndex], transform.position, Quaternion.identity);

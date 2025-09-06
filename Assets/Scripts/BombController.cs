@@ -33,16 +33,39 @@ public class BombController : MonoBehaviour
             StartCoroutine(PlaceBomb());
         }
     }
+    
+    // private void DebugAnchors(GameObject obj, string name)
+    // {
+    //     SpriteRenderer sr = obj.GetComponentInChildren<SpriteRenderer>(); // pega inclusive filhos
+    //     if (sr != null)
+    //     {
+    //         Vector3 center = sr.bounds.center;
+    //         Vector3 bottomCenter = new Vector3(center.x, sr.bounds.min.y, center.z);
 
+    //         Debug.Log($"{name} -> Pivot (Transform.position): {obj.transform.position}");
+    //         Debug.Log($"{name} -> Bounds Center: {center}");
+    //         Debug.Log($"{name} -> Bottom Center: {bottomCenter}");
+
+    //         Debug.DrawRay(obj.transform.position, Vector3.up * 0.5f, Color.green, 2f); // pivot
+    //         Debug.DrawRay(center, Vector3.up * 0.5f, Color.blue, 2f); // center
+    //         Debug.DrawRay(bottomCenter, Vector3.up * 0.5f, Color.red, 2f); // bottom center
+    //     }
+    //     else
+    //     {
+    //         Debug.LogWarning($"{name} não tem SpriteRenderer nem nos filhos!");
+    //     }
+    // }
+    
     private IEnumerator PlaceBomb()
     {
-        Vector2 position = transform.position;
-        position.x = Mathf.Round(position.x);
-        position.y = Mathf.Round(position.y);
+        Vector2 playerPosition = transform.position;
 
-        GameObject bombObj = Instantiate(bombPrefab, position, Quaternion.identity);
+        // Instancia a bomba no centro do grid
+        GameObject bombObj = Instantiate(bombPrefab, playerPosition, Quaternion.identity);
+
         bombsRemaining--;
 
+        // Inicializa a bomba
         Bomb bomb = bombObj.GetComponent<Bomb>();
         bomb.Init(bombFuseTime, explosionRadius, explosionDuration, explosionPrefab, explosionLayerMask, destructibleTiles, destructiblePrefab);
 
@@ -52,26 +75,6 @@ public class BombController : MonoBehaviour
         bombsRemaining++;
     }
 
-    private void Explode(Vector2 position, Vector2 direction, int length)
-    {
-        if (length <= 0)
-            return;
-
-        position += direction;
-
-        if (Physics2D.OverlapBox(position, Vector2.one / 2f, 0f, explosionLayerMask))
-        {
-            ClearDestructible(position);
-            return;
-        }
-
-        Explosion explosion = Instantiate(explosionPrefab, position, Quaternion.identity);
-        explosion.SetActiveRenderer(length > 1 ? explosion.middle : explosion.end);
-        explosion.SetDirection(direction);
-        explosion.DestroyAfter(explosionDuration);
-
-        Explode(position, direction, length - 1);
-    }
 
     private void ClearDestructible(Vector2 position)
     {

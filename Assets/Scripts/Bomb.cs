@@ -4,8 +4,8 @@ using UnityEngine.Tilemaps;
 
 public class Bomb : MonoBehaviour
 {
-    private float fuseTime;
-    private int explosionRadius;
+    public float fuseTime;
+    public int explosionRadius;
     private float explosionDuration;
     private Explosion explosionPrefab;
     private LayerMask explosionLayerMask;
@@ -15,7 +15,9 @@ public class Bomb : MonoBehaviour
     private Rigidbody2D rb;
     private bool isMoving;
     private Vector2 moveDirection;
-    public float moveSpeed = 100f;
+    public float moveSpeed = 20f;
+    private Vector2 playerPosition;
+    private IEnumerator fuseCoroutine;
 
     public void Init(
         float fuseTime,
@@ -37,7 +39,18 @@ public class Bomb : MonoBehaviour
 
         rb = GetComponent<Rigidbody2D>();
 
-        StartCoroutine(ExplodeAfterDelay());
+        fuseCoroutine = ExplodeAfterDelay();
+        StartCoroutine(fuseCoroutine);
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        // Se uma explosão encostar na bomba, ela detona antes do tempo
+        if (other.gameObject.layer == LayerMask.NameToLayer("Explosion"))
+        {
+            StopCoroutine(fuseCoroutine);
+            Explode();
+        }
     }
 
     private void Update()
@@ -63,21 +76,21 @@ public class Bomb : MonoBehaviour
         yield return new WaitForSeconds(fuseTime);
         Explode();
     }
-
+    
     private void Explode()
     {
         Vector2 position = transform.position;
-        position.x = Mathf.Round(position.x);
-        position.y = Mathf.Round(position.y);
 
+        // Cria explosão central - esta deve usar o sprite "start" apenas
         Explosion centerExplosion = Instantiate(explosionPrefab, position, Quaternion.identity);
         centerExplosion.SetActiveRenderer(centerExplosion.start);
         centerExplosion.DestroyAfter(explosionDuration);
 
-        DoExplode(position, Vector2.up, explosionRadius);
-        DoExplode(position, Vector2.down, explosionRadius);
-        DoExplode(position, Vector2.left, explosionRadius);
-        DoExplode(position, Vector2.right, explosionRadius);
+        // Cria explosões nas 4 direções, começando da próxima célula
+        DoExplode(position + Vector2.up, Vector2.up, explosionRadius);
+        DoExplode(position + Vector2.down, Vector2.down, explosionRadius);
+        DoExplode(position + Vector2.left, Vector2.left, explosionRadius);
+        DoExplode(position + Vector2.right, Vector2.right, explosionRadius);
 
         Destroy(gameObject);
     }
@@ -86,20 +99,46 @@ public class Bomb : MonoBehaviour
     {
         if (length <= 0) return;
 
-        position += direction;
-
-        if (Physics2D.OverlapBox(position, Vector2.one / 2f, 0f, explosionLayerMask))
+        // Verifica se há bloqueio por objetos sólidos ANTES de criar a explosão
+        Collider2D hit = Physics2D.OverlapBox(position, Vector2.one / 2f, 0f, explosionLayerMask);
+        if (hit != null)
         {
+            // Mesmo com bloqueio, tenta destruir o tile destrutível
             ClearDestructible(position);
-            return;
+            return; // Para a propagação aqui
         }
 
+        // Cria a explosão visual
         Explosion explosion = Instantiate(explosionPrefab, position, Quaternion.identity);
-        explosion.SetActiveRenderer(length > 1 ? explosion.middle : explosion.end);
+        
+        // Se é a última célula da direção, usa o sprite "end", senão usa "middle"
+        if (length == 1)
+        {
+            explosion.SetActiveRenderer(explosion.end);
+        }
+        else
+        {
+            explosion.SetActiveRenderer(explosion.middle);
+        }
+        
         explosion.SetDirection(direction);
         explosion.DestroyAfter(explosionDuration);
 
-        DoExplode(position, direction, length - 1);
+        // Tenta destruir tiles na posição atual (mesmo sem bloqueio)
+        ClearDestructible(position);
+
+        // Próxima célula
+        DoExplode(position + direction, direction, length - 1);
+    }
+
+    public void ExplodeInDirection(Vector2 direction, int length)
+    {
+        Vector2 position = transform.position;
+
+        // Para o special move, não pula célula - começa direto da posição atual
+        DoExplode(position, direction, length);
+
+        Destroy(gameObject);
     }
 
     private void ClearDestructible(Vector2 position)
@@ -109,7 +148,10 @@ public class Bomb : MonoBehaviour
 
         if (tile != null)
         {
-            Instantiate(destructiblePrefab, position, Quaternion.identity);
+            // Pega o centro da célula em coordenadas de mundo
+            Vector3 cellCenter = destructibleTiles.GetCellCenterWorld(cell);
+
+            Instantiate(destructiblePrefab, cellCenter, Quaternion.identity);
             destructibleTiles.SetTile(cell, null);
         }
     }

@@ -153,3 +153,5 @@ MonoBehaviour:
   - {fileID: 5681734161811793622, guid: f832a23e62e95c4449daa85b028d43d5, type: 3}
   - {fileID: 7266525813312433372, guid: 29385601a56e22b4faac44675679793e, type: 3}
   - {fileID: 1671571660335848563, guid: 9c2bdb21ab8265641bc0fc2d66b5f0f1, type: 3}
+  - {fileID: 3596893332475431231, guid: a894715fbeb94ec4f8fd532ef14e0344, type: 3}
+  spawnOffset: {x: 1, y: 1, z: 0}
