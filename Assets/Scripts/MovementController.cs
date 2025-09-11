@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using System.Collections;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class MovementController : MonoBehaviour
@@ -54,59 +55,80 @@ public class MovementController : MonoBehaviour
         }
     }
 
+    private bool specialMoveTriggered = false;
+private IEnumerator DoSpecialExplosion(Vector2 dir, AnimatedSpriteRenderer specialSprite)
+{
+    specialMoveTriggered = true;
+
+    // Ativa animação imediatamente
+    this.SetAnimation(specialSprite, true);
+
+    // Espera 0.4 segundos antes de explodir
+    yield return new WaitForSeconds(0.4f);
+
+    // Só explode se a direção for válida
+    SpawnExplosion(dir, true);
+}
+
     private void Update()
     {
         // --- SPECIAL MOVE ---
         if (Input.GetKey(this.inputSpecialMove))
         {
-            if (Input.GetKeyDown(this.inputRight))
+            if (!specialMoveTriggered)
             {
-                this.SetAnimation(this.spriteSpecialMoveRight);
-                SpawnExplosion(Vector2.right, true);
+                if (Input.GetKeyDown(this.inputRight))
+                {
+                    StartCoroutine(DoSpecialExplosion(Vector2.right, this.spriteSpecialMoveRight));
+                }
+                else if (Input.GetKeyDown(this.inputLeft))
+                {
+                    StartCoroutine(DoSpecialExplosion(Vector2.left, this.spriteSpecialMoveLeft));
+                }
+                else if (Input.GetKeyDown(this.inputUp))
+                {
+                    StartCoroutine(DoSpecialExplosion(Vector2.up, this.spriteSpecialMoveUp));
+                }
+                else if (Input.GetKeyDown(this.inputDown))
+                {
+                    StartCoroutine(DoSpecialExplosion(Vector2.down, this.spriteSpecialMoveDown));
+                }
+                else
+                {
+                    this.SetAnimation(this.spriteSpecialMove);
+                }
             }
-            else if (Input.GetKeyDown(this.inputLeft))
-            {
-                this.SetAnimation(this.spriteSpecialMoveLeft); 
-                SpawnExplosion(Vector2.left, true);
-            }
-            else if (Input.GetKeyDown(this.inputUp))
-            {
-                this.SetAnimation(this.spriteSpecialMoveUp); 
-                SpawnExplosion(Vector2.up, true);
-            }
-            else if (Input.GetKeyDown(this.inputDown))
-            {
-                this.SetAnimation(this.spriteSpecialMoveDown); 
-                SpawnExplosion(Vector2.down, true);
-            }
-            else
-            {
-                this.SetAnimation(this.spriteSpecialMove); 
-            }
-        }
 
-        // --- MOVIMENTO NORMAL ---
-        else if (Input.GetKey(this.inputUp))
-        {
-            this.SetDirection(Vector2.up, this.spriteRendererUp);
-        }
-        else if (Input.GetKey(this.inputDown))
-        {
-            this.SetDirection(Vector2.down, this.spriteRendererDown);
-        }
-        else if (Input.GetKey(this.inputLeft))
-        {
-            this.SetDirection(Vector2.left, this.spriteRendererLeft);
-        }
-        else if (Input.GetKey(this.inputRight))
-        {
-            this.SetDirection(Vector2.right, this.spriteRendererRight);
         }
         else
         {
-            this.SetDirection(Vector2.zero, this.activeSpriteRenderer);
+            // Reseta quando solta a tecla especial
+            specialMoveTriggered = false;
+
+            // --- MOVIMENTO NORMAL ---
+            if (Input.GetKey(this.inputUp))
+            {
+                this.SetDirection(Vector2.up, this.spriteRendererUp);
+            }
+            else if (Input.GetKey(this.inputDown))
+            {
+                this.SetDirection(Vector2.down, this.spriteRendererDown);
+            }
+            else if (Input.GetKey(this.inputLeft))
+            {
+                this.SetDirection(Vector2.left, this.spriteRendererLeft);
+            }
+            else if (Input.GetKey(this.inputRight))
+            {
+                this.SetDirection(Vector2.right, this.spriteRendererRight);
+            }
+            else
+            {
+                this.SetDirection(Vector2.zero, this.activeSpriteRenderer);
+            }
         }
     }
+
 
 
     private void FixedUpdate()
@@ -123,7 +145,7 @@ public class MovementController : MonoBehaviour
         this.SetAnimation(spriteRenderer);
     }
 
-    private void SetAnimation(AnimatedSpriteRenderer spriteRenderer)
+    private void SetAnimation(AnimatedSpriteRenderer spriteRenderer, bool isSpecial = false)
     {
         this.spriteRendererUp.enabled = spriteRenderer == this.spriteRendererUp;
         this.spriteRendererDown.enabled = spriteRenderer == this.spriteRendererDown;
@@ -137,6 +159,11 @@ public class MovementController : MonoBehaviour
 
         this.activeSpriteRenderer = spriteRenderer;
         this.activeSpriteRenderer.idle = this.direction == Vector2.zero;
+        if (isSpecial)
+        {
+            this.activeSpriteRenderer.idle = false;
+            this.activeSpriteRenderer.RestartAnimation(); // 🔑 resetar sempre que começar especial
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)

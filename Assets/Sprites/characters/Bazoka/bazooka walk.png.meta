@@ -1,0 +1,589 @@
+fileFormatVersion: 2
+guid: 4aca9da7293272042a073935463f787c
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 3212711259052575350
+    second: bazooka walk_0
+  - first:
+      213: 6161351294915839896
+    second: bazooka walk_1
+  - first:
+      213: -7616040911262097639
+    second: bazooka walk_2
+  - first:
+      213: 3035436364500632743
+    second: bazooka walk_3
+  - first:
+      213: 7416105964541361839
+    second: bazooka walk_4
+  - first:
+      213: -4274822778421679848
+    second: bazooka walk_5
+  - first:
+      213: -7143462192634031500
+    second: bazooka walk_6
+  - first:
+      213: 2993948648664100314
+    second: bazooka walk_7
+  - first:
+      213: -3296775817422081126
+    second: bazooka walk_8
+  - first:
+      213: 5264488617311771514
+    second: bazooka walk_9
+  - first:
+      213: 2907040710496419273
+    second: bazooka walk_10
+  - first:
+      213: -1113851126237782405
+    second: bazooka walk_11
+  - first:
+      213: -1232583039951527496
+    second: bazooka walk_12
+  - first:
+      213: -1950067006383786268
+    second: bazooka walk_13
+  - first:
+      213: -8225290572054681445
+    second: bazooka walk_14
+  - first:
+      213: -2628144516048371777
+    second: bazooka walk_15
+  - first:
+      213: 2485901879143045707
+    second: bazooka walk_16
+  - first:
+      213: -4793895692023767188
+    second: bazooka walk_17
+  - first:
+      213: -3031353579917398680
+    second: bazooka walk_18
+  - first:
+      213: -5590234857027674511
+    second: bazooka walk_19
+  externalObjects: {}
+  serializedVersion: 12
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: bazooka walk_0
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 152
+        width: 20
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 67a0ab15ed7d59c20800000000000000
+      internalID: 3212711259052575350
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bazooka walk_1
+      rect:
+        serializedVersion: 2
+        x: 62
+        y: 152
+        width: 22
+        height: 33
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8970ad5cb54818550800000000000000
+      internalID: 6161351294915839896
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bazooka walk_2
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 152
+        width: 23
+        height: 33
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 91f516984236e4690800000000000000
+      internalID: -7616040911262097639
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bazooka walk_3
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 152
+        width: 22
+        height: 33
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7a40d548a49002a20800000000000000
+      internalID: 3035436364500632743
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bazooka walk_4
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 152
+        width: 20
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: faeb421251d4be660800000000000000
+      internalID: 7416105964541361839
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bazooka walk_5
+      rect:
+        serializedVersion: 2
+        x: 12
+        y: 104
+        width: 22
+        height: 28
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8196d6ef457cca4c0800000000000000
+      internalID: -4274822778421679848
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bazooka walk_6
+      rect:
+        serializedVersion: 2
+        x: 62
+        y: 103
+        width: 21
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4729d95cbf25ddc90800000000000000
+      internalID: -7143462192634031500
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bazooka walk_7
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 103
+        width: 22
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: add626fee64ac8920800000000000000
+      internalID: 2993948648664100314
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bazooka walk_8
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 102
+        width: 23
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a9375727cdf7f32d0800000000000000
+      internalID: -3296775817422081126
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bazooka walk_9
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 102
+        width: 24
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a7b94f641883f0940800000000000000
+      internalID: 5264488617311771514
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bazooka walk_10
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 53
+        width: 20
+        height: 29
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9cdfcb0cf12e75820800000000000000
+      internalID: 2907040710496419273
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bazooka walk_11
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 54
+        width: 22
+        height: 29
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b7e9de75d4eca80f0800000000000000
+      internalID: -1113851126237782405
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bazooka walk_12
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 55
+        width: 24
+        height: 28
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8b1a483714cf4eee0800000000000000
+      internalID: -1232583039951527496
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bazooka walk_13
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 54
+        width: 21
+        height: 29
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4e6f84cb368ffe4e0800000000000000
+      internalID: -1950067006383786268
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bazooka walk_14
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 53
+        width: 20
+        height: 29
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b98af4eddc5e9dd80800000000000000
+      internalID: -8225290572054681445
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bazooka walk_15
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 4
+        width: 22
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fbfbb86bc74f68bd0800000000000000
+      internalID: -2628144516048371777
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bazooka walk_16
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 4
+        width: 22
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b4a1cc49692bf7220800000000000000
+      internalID: 2485901879143045707
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bazooka walk_17
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 5
+        width: 21
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c6fd5aa6449a87db0800000000000000
+      internalID: -4793895692023767188
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bazooka walk_18
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 5
+        width: 22
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 86d2a68daf77ee5d0800000000000000
+      internalID: -3031353579917398680
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: bazooka walk_19
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 5
+        width: 24
+        height: 29
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 17edbdf040f7b62b0800000000000000
+      internalID: -5590234857027674511
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
