@@ -34,12 +34,15 @@ public class MovementController : MonoBehaviour
     [Header("Special Move Settings")]
     public GameObject explosionPrefabGO;        // arraste o prefab do Explosion aqui no Inspector
     public Tilemap destructibleTiles;           // se quiser que a rajada destrua blocos
+    public Tilemap undestructibleTiles;
     public Destructible destructiblePrefab;     // se tiver prefabs destrutíveis
+    public Destructible itemDestructiblePrefab;
     public float explosionDuration = 0.5f; 
     public int explosionDistance = 9;
+    [SerializeField] private LayerMask explosionLayerMask;
 
     private Explosion explosionPrefab;          // componente Explosion que vamos usar
-
+ 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -56,22 +59,22 @@ public class MovementController : MonoBehaviour
         // --- SPECIAL MOVE ---
         if (Input.GetKey(this.inputSpecialMove))
         {
-            if (Input.GetKey(this.inputRight))
+            if (Input.GetKeyDown(this.inputRight))
             {
                 this.SetAnimation(this.spriteSpecialMoveRight);
                 SpawnExplosion(Vector2.right, true);
             }
-            else if (Input.GetKey(this.inputLeft))
+            else if (Input.GetKeyDown(this.inputLeft))
             {
                 this.SetAnimation(this.spriteSpecialMoveLeft); 
                 SpawnExplosion(Vector2.left, true);
             }
-            else if (Input.GetKey(this.inputUp))
+            else if (Input.GetKeyDown(this.inputUp))
             {
                 this.SetAnimation(this.spriteSpecialMoveUp); 
                 SpawnExplosion(Vector2.up, true);
             }
-            else if (Input.GetKey(this.inputDown))
+            else if (Input.GetKeyDown(this.inputDown))
             {
                 this.SetAnimation(this.spriteSpecialMoveDown); 
                 SpawnExplosion(Vector2.down, true);
@@ -81,7 +84,6 @@ public class MovementController : MonoBehaviour
                 this.SetAnimation(this.spriteSpecialMove); 
             }
         }
-
 
         // --- MOVIMENTO NORMAL ---
         else if (Input.GetKey(this.inputUp))
@@ -194,14 +196,14 @@ public class MovementController : MonoBehaviour
             this.explosionDistance,                       // explosionRadius
             explosionDuration,        // explosionDuration
             explosionPrefab,          // componente Explosion
-            LayerMask.GetMask("Blocking", "Explosion"),
+            explosionLayerMask,
             destructibleTiles,
-            destructiblePrefab
+            undestructibleTiles,
+            destructiblePrefab,
+            itemDestructiblePrefab
         );
 
         // Rajada só na direção
         bomb.ExplodeInDirection(direction, bomb.explosionRadius);
     }
-
-
 }

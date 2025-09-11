@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 1205495913850804668}
   - component: {fileID: 329630843826986497}
   - component: {fileID: 5723183348846799430}
-  m_Layer: 0
+  - component: {fileID: -3580149812911805794}
+  m_Layer: 9
   m_Name: ItemKickBomb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,3 +124,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 3
+--- !u!114 &-3580149812911805794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3596893332475431231}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56fd141a6cdb32d40876d52672683416, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  idleSprite: {fileID: -1643451265676479931, guid: 9e4e2c919cb743640a961b04bd4b35f6, type: 3}
+  animationSprites:
+  - {fileID: -1004808173228628505, guid: c116641c07e54854d85b3aacd88c80c5, type: 3}
+  - {fileID: -1334769218437964417, guid: c116641c07e54854d85b3aacd88c80c5, type: 3}
+  - {fileID: -773207235829606414, guid: c116641c07e54854d85b3aacd88c80c5, type: 3}
+  - {fileID: 2976452416554465569, guid: c116641c07e54854d85b3aacd88c80c5, type: 3}
+  animationTime: 0.16666667
+  loop: 0
+  idle: 0

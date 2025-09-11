@@ -8,9 +8,12 @@ public class Bomb : MonoBehaviour
     public int explosionRadius;
     private float explosionDuration;
     private Explosion explosionPrefab;
+    private Explosion itemExplosionPrefab;
     private LayerMask explosionLayerMask;
     private Tilemap destructibleTiles;
+    private Tilemap undestructibleTiles;
     private Destructible destructiblePrefab;
+    private Destructible itemDestructiblePrefab;
 
     private Rigidbody2D rb;
     private bool isMoving;
@@ -26,7 +29,9 @@ public class Bomb : MonoBehaviour
         Explosion explosionPrefab,
         LayerMask explosionLayerMask,
         Tilemap destructibleTiles,
-        Destructible destructiblePrefab
+        Tilemap undestructibleTiles,
+        Destructible destructiblePrefab,
+        Destructible itemDestructiblePrefab
     )
     {
         this.fuseTime = fuseTime;
@@ -35,7 +40,9 @@ public class Bomb : MonoBehaviour
         this.explosionPrefab = explosionPrefab;
         this.explosionLayerMask = explosionLayerMask;
         this.destructibleTiles = destructibleTiles;
+        this.undestructibleTiles = undestructibleTiles;
         this.destructiblePrefab = destructiblePrefab;
+        this.itemDestructiblePrefab = itemDestructiblePrefab;
 
         rb = GetComponent<Rigidbody2D>();
 
@@ -79,9 +86,8 @@ public class Bomb : MonoBehaviour
     
     private void Explode()
     {
-        Vector2 position = transform.position;
-
         // Cria explosão central - esta deve usar o sprite "start" apenas
+        Vector2 position = (Vector2)transform.position;
         Explosion centerExplosion = Instantiate(explosionPrefab, position, Quaternion.identity);
         centerExplosion.SetActiveRenderer(centerExplosion.start);
         centerExplosion.DestroyAfter(explosionDuration);
@@ -99,61 +105,83 @@ public class Bomb : MonoBehaviour
     {
         if (length <= 0) return;
 
-        // Verifica se há bloqueio por objetos sólidos ANTES de criar a explosão
         Collider2D hit = Physics2D.OverlapBox(position, Vector2.one / 2f, 0f, explosionLayerMask);
+
         if (hit != null)
         {
-            // Mesmo com bloqueio, tenta destruir o tile destrutível
-            ClearDestructible(position);
-            return; // Para a propagação aqui
-        }
+            // Se for indestrutível → para sem explosão
+            if (hit.gameObject.layer == LayerMask.NameToLayer("Indestructible"))
+            {
+                return;
+            }
 
-        // Cria a explosão visual
-        Explosion explosion = Instantiate(explosionPrefab, position, Quaternion.identity);
-        
-        // Se é a última célula da direção, usa o sprite "end", senão usa "middle"
-        if (length == 1)
-        {
-            explosion.SetActiveRenderer(explosion.end);
+            // Se for destrutível → cria explosão, destrói e para
+            if (hit.gameObject.layer == LayerMask.NameToLayer("Destructible"))
+            {
+                Explosion explosion = Instantiate(explosionPrefab, position, Quaternion.identity);
+                explosion.SetActiveRenderer(length == 1 ? explosion.end : explosion.middle);
+                explosion.SetDirection(direction);
+                explosion.DestroyAfter(explosionDuration);
+
+                ClearDestructible(position, "brick"); // remove o bloco
+                return;
+            }
+
+            // Se for ditem → cria explosão, destrói e para
+            if (hit.gameObject.layer == LayerMask.NameToLayer("Item"))
+            {
+                Explosion explosion = Instantiate(explosionPrefab, position, Quaternion.identity);
+                explosion.SetActiveRenderer(length == 1 ? explosion.end : explosion.middle);
+                explosion.SetDirection(direction);
+                explosion.DestroyAfter(explosionDuration);
+                Destroy(hit.gameObject);
+
+                ClearDestructible(position, "item"); // remove o bloco
+                return;
+            }
+
+            // Qualquer outra coisa → para sem continuar
+            return;
         }
         else
         {
-            explosion.SetActiveRenderer(explosion.middle);
-        }
-        
-        explosion.SetDirection(direction);
-        explosion.DestroyAfter(explosionDuration);
+            Explosion normalExplosion = Instantiate(explosionPrefab, position, Quaternion.identity);
+            normalExplosion.SetActiveRenderer(length == 1 ? normalExplosion.end : normalExplosion.middle);
+            normalExplosion.SetDirection(direction);
+            normalExplosion.DestroyAfter(explosionDuration);
 
-        // Tenta destruir tiles na posição atual (mesmo sem bloqueio)
-        ClearDestructible(position);
-
-        // Próxima célula
-        DoExplode(position + direction, direction, length - 1);
+            DoExplode(position + direction, direction, length - 1);
+        }       
     }
+
+    private void ClearDestructible(Vector2 position, string cellType)
+    {
+        Vector3Int cell = destructibleTiles.WorldToCell(position);
+        TileBase destructibleTile = destructibleTiles.GetTile(cell);
+
+        if (destructibleTile != null)
+        {
+            Vector3 cellCenter = destructibleTiles.GetCellCenterWorld(cell);
+            if (cellType == "brick")
+            {
+                Instantiate(destructiblePrefab, cellCenter, Quaternion.identity);
+            }
+            destructibleTiles.SetTile(cell, null);
+        }
+        if (cellType == "item")
+        {
+            Vector3 cellCenter = destructibleTiles.GetCellCenterWorld(cell);
+            Instantiate(itemDestructiblePrefab, cellCenter, Quaternion.identity);
+        }
+    }
+
 
     public void ExplodeInDirection(Vector2 direction, int length)
     {
         Vector2 position = transform.position;
-
-        // Para o special move, não pula célula - começa direto da posição atual
         DoExplode(position, direction, length);
 
         Destroy(gameObject);
-    }
-
-    private void ClearDestructible(Vector2 position)
-    {
-        Vector3Int cell = destructibleTiles.WorldToCell(position);
-        TileBase tile = destructibleTiles.GetTile(cell);
-
-        if (tile != null)
-        {
-            // Pega o centro da célula em coordenadas de mundo
-            Vector3 cellCenter = destructibleTiles.GetCellCenterWorld(cell);
-
-            Instantiate(destructiblePrefab, cellCenter, Quaternion.identity);
-            destructibleTiles.SetTile(cell, null);
-        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

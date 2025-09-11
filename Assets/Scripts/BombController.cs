@@ -19,7 +19,12 @@ public class BombController : MonoBehaviour
 
     [Header("Destructible")]
     public Tilemap destructibleTiles;
+    public Tilemap undestructibleTiles;
     public Destructible destructiblePrefab;
+    public Destructible itemDestructiblePrefab;
+
+    [Header("Scenary")]
+    public Tilemap scenary;
 
     private void OnEnable()
     {
@@ -58,23 +63,32 @@ public class BombController : MonoBehaviour
     
     private IEnumerator PlaceBomb()
     {
-        Vector2 playerPosition = transform.position;
+        // pega a posição do player
+        Vector3 playerPosition = transform.position;
 
-        // Instancia a bomba no centro do grid
-        GameObject bombObj = Instantiate(bombPrefab, playerPosition, Quaternion.identity);
+        // converte para a célula do tilemap scenary
+        Vector3Int cell = scenary.WorldToCell(playerPosition);
+
+        // pega o centro dessa célula no mundo
+        Vector3 cellCenter = scenary.GetCellCenterWorld(cell);
+
+        // instancia a bomba no centro da célula
+        GameObject bombObj = Instantiate(bombPrefab, cellCenter, Quaternion.identity);
 
         bombsRemaining--;
 
-        // Inicializa a bomba
+        // inicializa a bomba
         Bomb bomb = bombObj.GetComponent<Bomb>();
-        bomb.Init(bombFuseTime, explosionRadius, explosionDuration, explosionPrefab, explosionLayerMask, destructibleTiles, destructiblePrefab);
+        bomb.Init(bombFuseTime, explosionRadius, explosionDuration, explosionPrefab,
+                explosionLayerMask, destructibleTiles, undestructibleTiles,
+                destructiblePrefab, itemDestructiblePrefab);
 
+        // espera até a bomba ser destruída
         while (bombObj != null)
             yield return null;
 
         bombsRemaining++;
     }
-
 
     private void ClearDestructible(Vector2 position)
     {
