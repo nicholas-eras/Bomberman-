@@ -7,12 +7,13 @@ using System.Collections.Generic;
 public class BotController : MonoBehaviour
 {
     [Header("References")]
-    public Transform player;                    // Referência ao player
-    public Tilemap undestructibleTiles;         // Tilemap das paredes
-    
+    public Transform player;                    
+    [Header("Tilemaps")]
+    public Tilemap undestructibleTiles;
+    public Tilemap destructibleTiles;
     [Header("Movement Settings")]
-    public float speed = 3f;                    // Velocidade do bot (um pouco menor que o player)
-    public float pathUpdateRate = 0.3f;         // Taxa de atualização do pathfinding
+    public float speed = 3f;                    
+    public float pathUpdateRate = 0.3f;         
     
     [Header("Sprites")]
     public AnimatedSpriteRenderer spriteRendererUp;
@@ -29,12 +30,16 @@ public class BotController : MonoBehaviour
     private Vector3 currentTarget;
     private bool isMoving = false;
     
+    // CORREÇÃO: Variáveis para movimento suave e alinhado
+    private bool isMovingToTarget = false;
+    private Vector3 moveStartPosition;
+    private float moveProgress = 0f;
+    
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         activeSpriteRenderer = spriteRendererDown;
         
-        // Se não definiu o player manualmente, tenta encontrar
         if (player == null)
         {
             GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
@@ -47,7 +52,6 @@ public class BotController : MonoBehaviour
     
     private void Start()
     {
-        // Verifica se as referências estão configuradas
         if (player == null)
         {
             Debug.LogError("Bot: Player reference not found!");
@@ -60,25 +64,32 @@ public class BotController : MonoBehaviour
             return;
         }
         
-        // CORREÇÃO 1: Alinha o bot ao centro da célula no início
-        SnapToGrid();
+        // CORREÇÃO: Força alinhamento completo no início
+        ForceSnapToGrid();
         
-        // Debug inicial
         Vector3Int botCell = undestructibleTiles.WorldToCell(transform.position);
         Vector3Int playerCell = undestructibleTiles.WorldToCell(player.position);
         Debug.Log($"Bot starting at cell: {botCell}, Player at cell: {playerCell}");
         
-        // Inicia o pathfinding
         InvokeRepeating(nameof(UpdatePath), 0f, pathUpdateRate);
     }
     
-    // CORREÇÃO 1: Método para alinhar o bot ao grid
-    private void SnapToGrid()
+    // CORREÇÃO: Método melhorado para alinhamento ao grid
+    private void ForceSnapToGrid()
     {
         Vector3Int currentCell = undestructibleTiles.WorldToCell(transform.position);
         Vector3 cellCenter = undestructibleTiles.GetCellCenterWorld(currentCell);
+        
+        // Força todas as posições serem iguais
         transform.position = cellCenter;
         rb.position = cellCenter;
+        
+        // Para qualquer movimento em progresso
+        isMoving = false;
+        isMovingToTarget = false;
+        rb.velocity = Vector2.zero;
+        
+        Debug.Log($"Bot snapped to grid at: {cellCenter}, Cell: {currentCell}");
     }
     
     private void UpdatePath()
@@ -91,83 +102,125 @@ public class BotController : MonoBehaviour
         {
             pathQueue.Clear();
 
+            // Pula o primeiro ponto (posição atual) e adiciona os outros
             for (int i = 1; i < path.Count; i++)
             {
                 pathQueue.Enqueue(path[i]);
             }
 
-            // 👉 Força o bot a seguir o novo caminho, mesmo se já estiver se movendo
-            MoveToNextTarget();
+            // Se não está se movendo, inicia movimento
+            if (!isMovingToTarget)
+            {
+                MoveToNextTarget();
+            }
         }
     }
-
     
     private void MoveToNextTarget()
     {
         if (pathQueue.Count > 0)
         {
+            // Para o movimento atual se estiver em progresso
+            isMovingToTarget = false;
+            
+            // Pega próximo target
             currentTarget = pathQueue.Dequeue();
-            isMoving = true;
             
-            // CORREÇÃO 3: Calcula direção baseada apenas nos eixos principais
+            // CORREÇÃO: Calcula direção APENAS nos eixos principais
             Vector3 currentPos = transform.position;
-            Vector3 targetDirection = (currentTarget - currentPos).normalized;
+            Vector3 difference = currentTarget - currentPos;
             
-            // Força movimento apenas nos eixos principais (evita movimento diagonal)
-            if (Mathf.Abs(targetDirection.x) > Mathf.Abs(targetDirection.y))
+            // Força movimento apenas horizontal OU vertical (nunca diagonal)
+            if (Mathf.Abs(difference.x) > Mathf.Abs(difference.y))
             {
-                direction = new Vector2(Mathf.Sign(targetDirection.x), 0);
+                // Movimento horizontal
+                direction = new Vector2(Mathf.Sign(difference.x), 0);
+                currentTarget = new Vector3(currentTarget.x, currentPos.y, currentPos.z);
             }
             else
             {
-                direction = new Vector2(0, Mathf.Sign(targetDirection.y));
+                // Movimento vertical
+                direction = new Vector2(0, Mathf.Sign(difference.y));
+                currentTarget = new Vector3(currentPos.x, currentTarget.y, currentPos.z);
             }
             
+            // Inicia movimento suave
+            moveStartPosition = currentPos;
+            moveProgress = 0f;
+            isMovingToTarget = true;
+            isMoving = true;
+            
             UpdateAnimation();
+            
+            Debug.Log($"Moving from {currentPos} to {currentTarget} with direction {direction}");
         }
         else
         {
-            direction = Vector2.zero;
-            SetAnimation(activeSpriteRenderer);
-            isMoving = false;
+            // Não há mais targets
+            StopMovement();
         }
+    }
+    
+    private void StopMovement()
+    {
+        direction = Vector2.zero;
+        isMoving = false;
+        isMovingToTarget = false;
+        rb.velocity = Vector2.zero;
+        SetAnimation(activeSpriteRenderer);
+        
+        // CORREÇÃO: Garante que está alinhado ao parar
+        ForceSnapToGrid();
     }
     
     private void FixedUpdate()
     {
-        if (isMoving)
+        if (isMovingToTarget)
         {
-            Vector3 currentPos = transform.position;
-            
-            // Melhora detecção de chegada ao target
-            float distanceToTarget = Vector3.Distance(currentPos, currentTarget);
             float moveDistance = speed * Time.fixedDeltaTime;
+            float totalDistance = Vector3.Distance(moveStartPosition, currentTarget);
             
-            if (distanceToTarget <= moveDistance || distanceToTarget < 0.05f)
+            if (totalDistance <= 0.01f) // Target muito próximo
             {
-                // Posiciona exatamente no target (snap)
                 rb.MovePosition(currentTarget);
                 transform.position = currentTarget;
+                CheckNextTarget();
+                return;
+            }
+            
+            moveProgress += moveDistance / totalDistance;
+            
+            if (moveProgress >= 1f)
+            {
+                // Chegou ao target
+                moveProgress = 1f;
+                Vector3 finalPosition = currentTarget;
                 
-                // Verifica se há próximo target na fila antes de parar
-                if (pathQueue.Count > 0)
-                {
-                    MoveToNextTarget();
-                }
-                else
-                {
-                    // Para o movimento se não há mais targets
-                    direction = Vector2.zero;
-                    SetAnimation(activeSpriteRenderer);
-                    isMoving = false;
-                }
+                rb.MovePosition(finalPosition);
+                transform.position = finalPosition;
+                
+                CheckNextTarget();
             }
             else
             {
-                // Move usando direção já calculada (apenas eixos principais)
-                Vector2 newPosition = rb.position + direction * speed * Time.fixedDeltaTime;
+                // CORREÇÃO: Movimento linear suave (sem diagonal)
+                Vector3 newPosition = Vector3.Lerp(moveStartPosition, currentTarget, moveProgress);
                 rb.MovePosition(newPosition);
             }
+        }
+    }
+    
+    private void CheckNextTarget()
+    {
+        if (pathQueue.Count > 0)
+        {
+            // Há mais targets na fila
+            MoveToNextTarget();
+        }
+        else
+        {
+            // Acabaram os targets
+            StopMovement();
         }
     }
     
@@ -175,7 +228,6 @@ public class BotController : MonoBehaviour
     {
         if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
         {
-            Debug.Log(direction.x);
             // Movimento horizontal
             if (direction.x > 0)
                 SetAnimation(spriteRendererRight);
@@ -194,30 +246,24 @@ public class BotController : MonoBehaviour
     
     private void SetAnimation(AnimatedSpriteRenderer spriteRenderer)
     {
-        // Desabilita todos os sprites
         spriteRendererUp.enabled = false;
         spriteRendererDown.enabled = false;
         spriteRendererLeft.enabled = false;
         spriteRendererRight.enabled = false;
         
-        // Abilita o sprite correto
         spriteRenderer.enabled = true;
         activeSpriteRenderer = spriteRenderer;
         activeSpriteRenderer.idle = direction == Vector2.zero;
     }
     
-    // Pathfinding simples usando BFS (Breadth-First Search)
     private List<Vector3> FindPath(Vector3 startPos, Vector3 targetPos)
     {
-        // CORREÇÃO 5: Garante que as posições estão alinhadas ao grid
         Vector3Int startCell = undestructibleTiles.WorldToCell(startPos);
         Vector3Int targetCell = undestructibleTiles.WorldToCell(targetPos);
         
-        // Se o target está na mesma célula, não precisa mover
         if (startCell == targetCell)
             return null;
         
-        // BFS
         Queue<Vector3Int> queue = new Queue<Vector3Int>();
         Dictionary<Vector3Int, Vector3Int> cameFrom = new Dictionary<Vector3Int, Vector3Int>();
         HashSet<Vector3Int> visited = new HashSet<Vector3Int>();
@@ -236,13 +282,11 @@ public class BotController : MonoBehaviour
         {
             Vector3Int current = queue.Dequeue();
             
-            // Chegou ao destino
             if (current == targetCell)
             {
                 return ReconstructPath(cameFrom, startCell, targetCell);
             }
             
-            // Explora vizinhos
             foreach (Vector3Int dir in directions)
             {
                 Vector3Int neighbor = current + dir;
@@ -256,21 +300,14 @@ public class BotController : MonoBehaviour
             }
         }
         
-        return null; // Não encontrou caminho
+        return null;
     }
     
     private bool IsWall(Vector3Int cellPosition)
     {
-        // Verifica se há uma tile indestrutível nesta posição
-        bool hasWall = undestructibleTiles.HasTile(cellPosition);
-        
-        // Debug adicional para verificar paredes
-        if (hasWall)
-        {
-            Debug.Log($"Wall detected at {cellPosition}");
-        }
-        
-        return hasWall;
+        bool hasUndestructible = undestructibleTiles.HasTile(cellPosition);
+        bool hasDestructible = destructibleTiles != null && destructibleTiles.HasTile(cellPosition);
+        return hasUndestructible || hasDestructible;
     }
     
     private List<Vector3> ReconstructPath(Dictionary<Vector3Int, Vector3Int> cameFrom, Vector3Int start, Vector3Int target)
@@ -280,25 +317,43 @@ public class BotController : MonoBehaviour
         
         while (current != start)
         {
-            // CORREÇÃO 6: Garante que todos os pontos do path estão no centro das células
             Vector3 worldPos = undestructibleTiles.GetCellCenterWorld(current);
             path.Add(worldPos);
             current = cameFrom[current];
         }
         
-        // Adiciona posição inicial (também centralizada)
         Vector3 startWorldPos = undestructibleTiles.GetCellCenterWorld(start);
         path.Add(startWorldPos);
         
         path.Reverse();
+        
+        // Debug do caminho
+        Debug.Log($"Path found with {path.Count} points:");
+        for (int i = 0; i < path.Count; i++)
+        {
+            Debug.Log($"  Point {i}: {path[i]}");
+        }
+        
         return path;
     }
     
-    // CORREÇÃO 7: Método público para realinhar o bot (útil para debug)
     [ContextMenu("Snap to Grid")]
-    public void ForceSnapToGrid()
+    public void ForceSnapToGridMenu()
     {
-        SnapToGrid();
+        ForceSnapToGrid();
+    }
+    
+    [ContextMenu("Debug Position")]
+    public void DebugPosition()
+    {
+        Vector3Int currentCell = undestructibleTiles.WorldToCell(transform.position);
+        Vector3 cellCenter = undestructibleTiles.GetCellCenterWorld(currentCell);
+        
+        Debug.Log($"Transform Position: {transform.position}");
+        Debug.Log($"RigidBody Position: {rb.position}");
+        Debug.Log($"Current Cell: {currentCell}");
+        Debug.Log($"Cell Center: {cellCenter}");
+        Debug.Log($"Distance to center: {Vector3.Distance(transform.position, cellCenter)}");
     }
     
     private void OnTriggerEnter2D(Collider2D other)
@@ -312,7 +367,7 @@ public class BotController : MonoBehaviour
     private void DeathSequence()
     {
         this.enabled = false;
-        CancelInvoke(); // Para o pathfinding
+        CancelInvoke();
         
         spriteRendererUp.enabled = false;
         spriteRendererDown.enabled = false;
@@ -331,7 +386,7 @@ public class BotController : MonoBehaviour
     
     private void OnDrawGizmos()
     {
-        // Visualiza o caminho no editor
+        // Caminho
         if (Application.isPlaying && pathQueue != null)
         {
             Gizmos.color = Color.red;
@@ -344,15 +399,15 @@ public class BotController : MonoBehaviour
                 lastPos = point;
             }
             
-            // Mostra o target atual
-            if (isMoving)
+            if (isMovingToTarget)
             {
                 Gizmos.color = Color.yellow;
                 Gizmos.DrawWireSphere(currentTarget, 0.2f);
+                Gizmos.DrawLine(transform.position, currentTarget);
             }
         }
         
-        // CORREÇÃO 8: Mostra o centro da célula atual
+        // Centro da célula atual
         if (undestructibleTiles != null)
         {
             Vector3Int currentCell = undestructibleTiles.WorldToCell(transform.position);
@@ -360,6 +415,10 @@ public class BotController : MonoBehaviour
             
             Gizmos.color = Color.green;
             Gizmos.DrawWireCube(cellCenter, Vector3.one * 0.1f);
+            
+            // NOVO: Mostra a diferença entre posição real e centro da célula
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawLine(transform.position, cellCenter);
         }
     }
 }
