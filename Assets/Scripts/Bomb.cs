@@ -7,6 +7,16 @@ public class Bomb : MonoBehaviour
     public float fuseTime;
     public int explosionRadius;
     private float explosionDuration;
+    
+    // === NOVO SISTEMA DE TEMPO RESTANTE ===
+    [Header("Timing Info")]
+    [SerializeField] private float remainingTime; // Visível no Inspector para debug
+    public float RemainingTime => remainingTime; // Property pública para outros scripts
+    public bool IsExploded { get; private set; } = false;
+    public bool IsExploding { get; private set; } = false;
+    
+    private float plantTime; // Quando foi plantada
+    
     private Explosion explosionPrefab;
     private Explosion itemExplosionPrefab;
     private LayerMask explosionLayerMask;
@@ -46,22 +56,28 @@ public class Bomb : MonoBehaviour
 
         rb = GetComponent<Rigidbody2D>();
 
+        // === INICIALIZA SISTEMA DE TIMING ===
+        plantTime = Time.time;
+        remainingTime = fuseTime;
+        IsExploded = false;
+        IsExploding = false;
+
         fuseCoroutine = ExplodeAfterDelay();
         StartCoroutine(fuseCoroutine);
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        // Se uma explosão encostar na bomba, ela detona antes do tempo
-        if (other.gameObject.layer == LayerMask.NameToLayer("Explosion"))
-        {
-            StopCoroutine(fuseCoroutine);
-            Explode();
-        }
+        
+        Debug.Log($"💣 Bomba plantada! Tempo: {fuseTime}s, Raio: {explosionRadius}");
     }
 
     private void Update()
     {
+        // === ATUALIZA TEMPO RESTANTE ===
+        if (!IsExploded && !IsExploding)
+        {
+            remainingTime = fuseTime - (Time.time - plantTime);
+            remainingTime = Mathf.Max(0f, remainingTime); // Não pode ser negativo
+        }
+        
+        // Movimento da bomba (se kickada)
         if (isMoving)
         {
             Vector2 nextPos = rb.position + moveDirection * moveSpeed * Time.deltaTime;
@@ -78,14 +94,38 @@ public class Bomb : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        // Se uma explosão encostar na bomba, ela detona antes do tempo
+        if (other.gameObject.layer == LayerMask.NameToLayer("Explosion"))
+        {
+            if (!IsExploded && !IsExploding)
+            {
+                Debug.Log($"💥 Bomba detonada por explosão! Tempo restante era: {remainingTime:F1}s");
+                StopCoroutine(fuseCoroutine);
+                Explode();
+            }
+        }
+    }
+
     private IEnumerator ExplodeAfterDelay()
     {
         yield return new WaitForSeconds(fuseTime);
-        Explode();
+        
+        if (!IsExploded) // Só explode se não foi detonada antes
+        {
+            Debug.Log($"💥 Bomba explodiu por timer!");
+            Explode();
+        }
     }
     
     private void Explode()
     {
+        if (IsExploded || IsExploding) return; // Evita dupla explosão
+        
+        IsExploding = true;
+        remainingTime = 0f;
+        
         // Cria explosão central - esta deve usar o sprite "start" apenas
         Vector2 position = (Vector2)transform.position;
         Explosion centerExplosion = Instantiate(explosionPrefab, position, Quaternion.identity);
@@ -98,9 +138,38 @@ public class Bomb : MonoBehaviour
         DoExplode(position + Vector2.left, Vector2.left, explosionRadius);
         DoExplode(position + Vector2.right, Vector2.right, explosionRadius);
 
+        // === MARCA COMO EXPLODIDA ANTES DE DESTRUIR ===
+        IsExploded = true;
+        
+        // Destrói após a duração da explosão para dar tempo do bot detectar
+        StartCoroutine(DestroyAfterExplosion());
+    }
+    
+    private IEnumerator DestroyAfterExplosion()
+    {
+        yield return new WaitForSeconds(explosionDuration);
         Destroy(gameObject);
     }
 
+    // === MÉTODOS ÚTEIS PARA O BOT ===
+    public float GetRemainingTimePercentage()
+    {
+        return remainingTime / fuseTime;
+    }
+    
+    public bool IsAboutToExplode(float warningTime = 1f)
+    {
+        return remainingTime <= warningTime;
+    }
+    
+    public bool IsDangerous(Vector3Int position, Tilemap tilemap)
+    {
+        Vector3Int bombCell = tilemap.WorldToCell(transform.position);
+        int distance = Mathf.Abs(position.x - bombCell.x) + Mathf.Abs(position.y - bombCell.y);
+        return distance <= explosionRadius;
+    }
+
+    // Resto do código permanece igual...
     private void DoExplode(Vector2 position, Vector2 direction, int length)
     {
         if (length <= 0) return;
@@ -175,12 +244,12 @@ public class Bomb : MonoBehaviour
         }
     }
 
-
     public void ExplodeInDirection(Vector2 direction, int length)
     {
         Vector2 position = transform.position;
         DoExplode(position, direction, length);
 
+        IsExploded = true;
         Destroy(gameObject);
     }
 

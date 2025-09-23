@@ -189,7 +189,7 @@ MonoBehaviour:
   player: {fileID: 2122729110}
   undestructibleTiles: {fileID: 1204104577}
   destructibleTiles: {fileID: 848739280}
-  scenary: {fileID: 0}
+  scenary: {fileID: 1183667863}
   speed: 5
   pathUpdateRate: 0.3
   bombPrefab: {fileID: 1577100872150136437, guid: e10230ffd5e90c3489946b2652130401, type: 3}
