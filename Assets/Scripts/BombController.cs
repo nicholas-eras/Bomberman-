@@ -38,29 +38,7 @@ public class BombController : MonoBehaviour
             StartCoroutine(PlaceBomb());
         }
     }
-    
-    // private void DebugAnchors(GameObject obj, string name)
-    // {
-    //     SpriteRenderer sr = obj.GetComponentInChildren<SpriteRenderer>(); // pega inclusive filhos
-    //     if (sr != null)
-    //     {
-    //         Vector3 center = sr.bounds.center;
-    //         Vector3 bottomCenter = new Vector3(center.x, sr.bounds.min.y, center.z);
-
-    //         Debug.Log($"{name} -> Pivot (Transform.position): {obj.transform.position}");
-    //         Debug.Log($"{name} -> Bounds Center: {center}");
-    //         Debug.Log($"{name} -> Bottom Center: {bottomCenter}");
-
-    //         Debug.DrawRay(obj.transform.position, Vector3.up * 0.5f, Color.green, 2f); // pivot
-    //         Debug.DrawRay(center, Vector3.up * 0.5f, Color.blue, 2f); // center
-    //         Debug.DrawRay(bottomCenter, Vector3.up * 0.5f, Color.red, 2f); // bottom center
-    //     }
-    //     else
-    //     {
-    //         Debug.LogWarning($"{name} não tem SpriteRenderer nem nos filhos!");
-    //     }
-    // }
-    
+        
     private IEnumerator PlaceBomb()
     {
         // pega a posição do player

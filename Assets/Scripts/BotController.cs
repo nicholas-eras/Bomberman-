@@ -62,6 +62,7 @@ public class BotController : MonoBehaviour
     private List<Vector3Int> activeBombPositions = new List<Vector3Int>();
 
     private Coroutine fleeTimerCoroutine;
+
     // === FUNÇÃO DE TIMER DE FUGA ===
     private IEnumerator FleeTimer(float fleeTime)
     {
@@ -70,6 +71,7 @@ public class BotController : MonoBehaviour
 
         StopFleeingFromBomb();
     }
+
     // === FUNÇÃO PARA PARAR A FUGA ===
     private void StopFleeingFromBomb()
     {
@@ -145,6 +147,7 @@ public class BotController : MonoBehaviour
             transform.position = centeredPosition;
         }
     }
+
     private void UpdatePath()
     {
         if (player == null || isPlacingBomb) return;
@@ -154,10 +157,12 @@ public class BotController : MonoBehaviour
         {
             return;
         }
+
         if (!isFleeingFromBomb)
         {
             CheckPreciseBombDanger();
         }
+
         List<Vector3> path = FindPath(transform.position, player.position);
 
         if (path != null && path.Count > 0)
@@ -175,6 +180,7 @@ public class BotController : MonoBehaviour
             }
         }
     }
+
     private void MoveToNextTarget()
     {
         if (pathQueue.Count <= 0)
@@ -272,7 +278,6 @@ public class BotController : MonoBehaviour
         Vector3Int currentCell = undestructibleTiles.WorldToCell(transform.position);
         return !IsSafeFromBombsWithRadius(currentCell);
     }
-
 
     private void StopMovement()
     {
@@ -403,13 +408,19 @@ public class BotController : MonoBehaviour
                 if (!costSoFar.ContainsKey(neighbor) || newCost < costSoFar[neighbor])
                 {
                     costSoFar[neighbor] = newCost;
-                    frontier.Enqueue(neighbor, newCost);
+                    int priority = newCost + ManhattanDistance(neighbor, targetCell);
+                    frontier.Enqueue(neighbor, priority);                    
                     cameFrom[neighbor] = current;
                 }
             }
         }
 
         return null;
+    }
+
+    private int ManhattanDistance(Vector3Int a, Vector3Int b)
+    {
+        return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
     }
 
     private bool IsWallUndestructible(Vector3Int cellPosition)
@@ -421,7 +432,7 @@ public class BotController : MonoBehaviour
     {
         // Tiles destrutíveis custam mais, mas ainda são passáveis
         if (destructibleTiles != null && destructibleTiles.HasTile(cellPosition))
-            return 5;
+            return 10;
         return 1;
     }
 
@@ -544,7 +555,6 @@ public class BotController : MonoBehaviour
         }
     }
 
-
     // Nova função para desenhar bombas em uma célula específica
     private void DrawBombsInCell(Vector3Int cellPosition, Vector3 worldPos)
     {
@@ -650,6 +660,7 @@ public class BotController : MonoBehaviour
     {
         isFleeingFromBomb = !isFleeingFromBomb; // Força mostrar gizmos
     }
+
     private void DrawSurroundingsGizmos(Vector3Int currentCell)
     {
         // Só desenha quando está fugindo ou colocando bomba (para não poluir sempre)
@@ -851,7 +862,6 @@ public class BotController : MonoBehaviour
         }
     }
 
-    // Verifica se uma posição está no caminho de explosão de uma bomba
     private bool IsInExplosionPath(Vector3Int targetPos, Vector3Int bombPos, int explosionRadius)
     {
         // Verifica as 4 direções: up, down, left, right
@@ -884,7 +894,6 @@ public class BotController : MonoBehaviour
         return false; // Não está no caminho de explosão
     }
 
-    // Verifica se a explosão é bloqueada por algum obstáculo
     private bool IsExplosionBlocked(Vector3Int bombPos, Vector3Int direction, int maxDistance)
     {
         for (int distance = 1; distance < maxDistance; distance++)
@@ -906,6 +915,7 @@ public class BotController : MonoBehaviour
 
         return false; // Caminho livre
     }
+
     private IEnumerator PlaceBombAndFlee(Vector3Int destructibleCell)
     {
         isPlacingBomb = true;
@@ -980,6 +990,7 @@ public class BotController : MonoBehaviour
             EmergencyFlee();
         }
     }
+
     // === MELHORADA: FUGA DE EMERGÊNCIA MAIS INTELIGENTE ===
     private void EmergencyFlee()
     {
@@ -1343,6 +1354,7 @@ public class BotController : MonoBehaviour
         }
     }
     // === FUNÇÃO PARA ENCONTRAR POSIÇÃO SEGURA LONGE DE UMA BOMBA ===
+
     private Vector3Int FindSafePositionAwayFromBomb(Vector3Int bombPos, int bombRadius)
     {
         Vector3Int currentCell = undestructibleTiles.WorldToCell(transform.position);
@@ -1384,6 +1396,7 @@ public class BotController : MonoBehaviour
         }
         return Vector3Int.zero;
     }
+
     private void CheckPreciseBombDanger()
     {
         Vector3Int currentCell = undestructibleTiles.WorldToCell(transform.position);
@@ -1418,6 +1431,7 @@ public class BotController : MonoBehaviour
             StartPreciseFleeFromBomb(mostDangerousBomb);
         }
     }
+    
     // === VERSÃO APRIMORADA PARA MÚLTIPLAS BOMBAS ===
     private void CheckMultipleBombDanger()
     {

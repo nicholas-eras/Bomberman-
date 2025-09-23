@@ -20,12 +20,10 @@ public class ItemPickup : MonoBehaviour
         if (botController != null)
         {
             HandleBotPickup(entity);
-            Debug.Log($"Bot pegou item: {type}");
         }
         else
         {
             HandlePlayerPickup(entity);
-            Debug.Log($"Player pegou item: {type}");
         }
 
         Destroy(gameObject);

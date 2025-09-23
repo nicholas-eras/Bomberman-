@@ -99,7 +99,6 @@ public class Bomb : MonoBehaviour
         {
             if (!IsExploded && !IsExploding)
             {
-                Debug.Log($"💥 Bomba detonada por explosão! Tempo restante era: {remainingTime:F1}s");
                 StopCoroutine(fuseCoroutine);
                 Explode();
             }
