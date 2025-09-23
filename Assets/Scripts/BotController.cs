@@ -17,6 +17,7 @@ public class BotController : MonoBehaviour
     [Header("Movement Settings")]
     public float speed = 3f;
     public float pathUpdateRate = 0.3f;
+    public bool canKickBomb = false;
 
     [Header("Bomb Settings")]
     public GameObject bombPrefab;
@@ -25,7 +26,7 @@ public class BotController : MonoBehaviour
     public Explosion explosionPrefab;
     public LayerMask explosionLayerMask;
     public float explosionDuration = 1f;
-    public int explosionRadius = 2;
+    public int explosionRadius = 1;
     public Destructible destructiblePrefab;
     public Destructible itemDestructiblePrefab;
 
@@ -64,36 +65,30 @@ public class BotController : MonoBehaviour
     // === FUNÇÃO DE TIMER DE FUGA ===
     private IEnumerator FleeTimer(float fleeTime)
     {
-        Debug.Log($"⏰ Iniciando timer de fuga: {fleeTime}s");
 
         yield return new WaitForSeconds(fleeTime);
 
-        Debug.Log("⏰ Timer de fuga acabou - parando fuga");
         StopFleeingFromBomb();
     }
-// === FUNÇÃO PARA PARAR A FUGA ===
-private void StopFleeingFromBomb()
-{
-    Debug.Log("🛑 Parando fuga da bomba");
-    
-    isFleeingFromBomb = false;
-    
-    // Para o timer se ainda estiver rodando
-    if (fleeTimerCoroutine != null)
+    // === FUNÇÃO PARA PARAR A FUGA ===
+    private void StopFleeingFromBomb()
     {
-        StopCoroutine(fleeTimerCoroutine);
-        fleeTimerCoroutine = null;
+        isFleeingFromBomb = false;
+
+        // Para o timer se ainda estiver rodando
+        if (fleeTimerCoroutine != null)
+        {
+            StopCoroutine(fleeTimerCoroutine);
+            fleeTimerCoroutine = null;
+        }
+
+        // Limpa qualquer movimento de fuga pendente
+        if (pathQueue.Count > 0)
+        {
+            pathQueue.Clear();
+            StopMovement();
+        }
     }
-    
-    // Limpa qualquer movimento de fuga pendente
-    if (pathQueue.Count > 0)
-    {
-        pathQueue.Clear();
-        StopMovement();
-    }
-    
-    Debug.Log("✅ Bot pode voltar a perseguir o player");
-}
 
     private void Awake()
     {
@@ -122,13 +117,11 @@ private void StopFleeingFromBomb()
     {
         if (player == null)
         {
-            Debug.LogError("Bot: Player reference not found!");
             return;
         }
 
         if (undestructibleTiles == null)
         {
-            Debug.LogError("Bot: UndestructibleTiles tilemap not assigned!");
             return;
         }
 
@@ -149,7 +142,6 @@ private void StopFleeingFromBomb()
         float distanceFromCenter = Vector3.Distance(transform.position, centeredPosition);
         if (distanceFromCenter > 0.1f)
         {
-            Debug.Log($"Snap to grid: {transform.position} → {centeredPosition}");
             transform.position = centeredPosition;
         }
     }
@@ -163,9 +155,9 @@ private void StopFleeingFromBomb()
             return;
         }
         if (!isFleeingFromBomb)
-            {
-                CheckPreciseBombDanger();
-            }
+        {
+            CheckPreciseBombDanger();
+        }
         List<Vector3> path = FindPath(transform.position, player.position);
 
         if (path != null && path.Count > 0)
@@ -199,15 +191,8 @@ private void StopFleeingFromBomb()
         Vector3 nextTarget = pathQueue.Peek();
         Vector3Int nextTargetCell = undestructibleTiles.WorldToCell(nextTarget);
 
-        Debug.Log($"=== MOVIMENTO ===");
-        Debug.Log($"Posição atual do bot: {transform.position}");
-        Debug.Log($"Célula atual: {currentCell}");
-        Debug.Log($"Target próximo: {nextTarget}");
-        Debug.Log($"Célula do target: {nextTargetCell}");
-
         if (currentCell == nextTargetCell)
         {
-            Debug.Log("Já chegou no target, removendo da fila");
             pathQueue.Dequeue();
             MoveToNextTarget();
             return;
@@ -217,11 +202,8 @@ private void StopFleeingFromBomb()
         Vector3Int deltaCell = nextTargetCell - currentCell;
         int manhattanDistance = Mathf.Abs(deltaCell.x) + Mathf.Abs(deltaCell.y);
 
-        Debug.Log($"Delta células: {deltaCell}, Distância Manhattan: {manhattanDistance}");
-
         if (manhattanDistance != 1)
         {
-            Debug.LogError($"ERRO: Target não é adjacente! Removendo target inválido.");
             pathQueue.Dequeue();
             MoveToNextTarget();
             return;
@@ -241,28 +223,22 @@ private void StopFleeingFromBomb()
         if (deltaCell.x > 0)
         {
             direction = Vector2.right;
-            Debug.Log($"→ Moving RIGHT from {currentCell} to {nextTargetCell}");
         }
         else if (deltaCell.x < 0)
         {
             direction = Vector2.left;
-            Debug.Log($"← Moving LEFT from {currentCell} to {nextTargetCell}");
         }
         else if (deltaCell.y > 0)
         {
             direction = Vector2.up;
-            Debug.Log($"↑ Moving UP from {currentCell} to {nextTargetCell}");
         }
         else if (deltaCell.y < 0)
         {
             direction = Vector2.down;
-            Debug.Log($"↓ Moving DOWN from {currentCell} to {nextTargetCell}");
         }
 
         // === FUNDAMENTAL: USA O CENTRO CORRETO COMO TARGET ===
         currentTarget = undestructibleTiles.GetCellCenterWorld(nextTargetCell);
-
-        Debug.Log($"Target final definido: {currentTarget}");
 
         isMovingToTarget = true;
         isMoving = true;
@@ -325,10 +301,6 @@ private void StopFleeingFromBomb()
                 transform.position = currentTarget;
                 isMovingToTarget = false;
 
-                Debug.Log($"=== CHEGOU NO TARGET ===");
-                Debug.Log($"Nova posição: {transform.position}");
-                Debug.Log($"Fila restante: {pathQueue.Count} targets");
-
                 // Verifica próximo target
                 CheckNextTarget();
             }
@@ -342,19 +314,12 @@ private void StopFleeingFromBomb()
 
     private void CheckNextTarget()
     {
-        Debug.Log($"=== CHECK NEXT TARGET ===");
-        Debug.Log($"pathQueue.Count: {pathQueue.Count}");
-        Debug.Log($"isMovingToTarget: {isMovingToTarget}");
-        Debug.Log($"isFleeingFromBomb: {isFleeingFromBomb}");
-
         if (pathQueue.Count > 0)
         {
-            Debug.Log("Ainda há targets na fila, chamando MoveToNextTarget()");
             MoveToNextTarget();
         }
         else
         {
-            Debug.Log("Fila vazia, parando movimento");
             StopMovement();
         }
     }
@@ -962,8 +927,6 @@ private void StopFleeingFromBomb()
                   explosionLayerMask, destructibleTiles, undestructibleTiles,
                   destructiblePrefab, itemDestructiblePrefab);
 
-        Debug.Log($"Bot colocou bomba em {currentCell}");
-
         yield return null; // aguarda um frame para inicializar
 
         isPlacingBomb = false;
@@ -978,7 +941,6 @@ private void StopFleeingFromBomb()
         }
         else
         {
-            Debug.LogWarning("Nenhuma posição segura encontrada, fuga de emergência!");
             EmergencyFlee();
         }
 
@@ -996,10 +958,6 @@ private void StopFleeingFromBomb()
         {
             pathQueue.Clear();
 
-            Debug.Log($"=== CONVERSÃO CAMINHO MANHATTAN (CENTRALIZADO) ===");
-            Debug.Log($"Posição atual do bot: {transform.position}");
-            Debug.Log($"Célula atual calculada: {currentCell}");
-            Debug.Log($"Caminho células: {string.Join(" → ", manhattanPath)}");
 
             // Converte células para posições mundo CENTRALIZADAS
             for (int i = 1; i < manhattanPath.Count; i++)
@@ -1009,19 +967,16 @@ private void StopFleeingFromBomb()
                 // === CORREÇÃO: SEMPRE USA CENTRO DA CÉLULA ===
                 Vector3 worldPosCenter = undestructibleTiles.GetCellCenterWorld(cellPos);
 
-                Debug.Log($"  Célula {cellPos} → Centro do mundo {worldPosCenter}");
 
                 pathQueue.Enqueue(worldPosCenter);
             }
 
-            Debug.Log($"Fila final tem {pathQueue.Count} posições centralizadas");
 
             if (!isMovingToTarget)
                 MoveToNextTarget();
         }
         else
         {
-            Debug.LogWarning("Caminho Manhattan bloqueado! Tentando fuga de emergência.");
             EmergencyFlee();
         }
     }
@@ -1338,7 +1293,6 @@ private void StopFleeingFromBomb()
 
             if (!stillInDanger)
             {
-                Debug.Log("✅ Saiu de perigo! Parando fuga antecipadamente.");
                 StopFleeingFromBomb();
                 yield break;
             }
@@ -1352,8 +1306,6 @@ private void StopFleeingFromBomb()
         Vector3Int bombCell = undestructibleTiles.WorldToCell(dangerousBomb.transform.position);
         float remainingTime = dangerousBomb.RemainingTime;
 
-        Debug.Log($"🏃 FUGA PRECISA! Bomba em {bombCell}, tempo restante: {remainingTime:F2}s");
-
         isFleeingFromBomb = true;
 
         // === CÁLCULO PRECISO DO TEMPO DE FUGA ===
@@ -1363,19 +1315,16 @@ private void StopFleeingFromBomb()
         {
             // Tempo suficiente - usa o tempo restante + margem pequena
             fleeTime = remainingTime + 0.3f;
-            Debug.Log($"⏱️ Tempo suficiente para fuga planejada: {fleeTime}s");
         }
         else if (remainingTime > 0.5f)
         {
             // Tempo apertado - usa tempo restante + margem mínima
             fleeTime = remainingTime + 0.1f;
-            Debug.Log($"⚡ Fuga rápida! Tempo: {fleeTime}s");
         }
         else
         {
             // Situação crítica - fuga de emergência imediata
             fleeTime = 0.8f; // Tempo mínimo para sair da zona
-            Debug.Log($"🚨 EMERGÊNCIA! Bomba quase explodindo: {remainingTime:F2}s");
         }
 
         // Inicia timer de fuga
@@ -1390,61 +1339,52 @@ private void StopFleeingFromBomb()
         }
         else
         {
-            Debug.LogWarning("❌ Nenhuma fuga possível! Tentando fuga de emergência.");
             EmergencyFlee();
         }
     }
     // === FUNÇÃO PARA ENCONTRAR POSIÇÃO SEGURA LONGE DE UMA BOMBA ===
-private Vector3Int FindSafePositionAwayFromBomb(Vector3Int bombPos, int bombRadius)
-{
-    Vector3Int currentCell = undestructibleTiles.WorldToCell(transform.position);
-    int safeDistance = bombRadius + 2; // +2 margem extra
-    
-    Debug.Log($"🔍 Procurando posição segura longe de {bombPos}, raio: {bombRadius}, distância mínima: {safeDistance}");
-    
-    // Tenta posições em ordem de prioridade
-    Vector3Int[] directions = { Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right };
-    
-    foreach (Vector3Int dir in directions)
+    private Vector3Int FindSafePositionAwayFromBomb(Vector3Int bombPos, int bombRadius)
     {
-        for (int dist = safeDistance; dist <= safeDistance + 3; dist++)
+        Vector3Int currentCell = undestructibleTiles.WorldToCell(transform.position);
+        int safeDistance = bombRadius + 2; // +2 margem extra
+
+        // Tenta posições em ordem de prioridade
+        Vector3Int[] directions = { Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right };
+
+        foreach (Vector3Int dir in directions)
         {
-            Vector3Int testPos = currentCell + (dir * dist);
-            
-            // Verifica se está longe o suficiente da bomba
-            int distanceToBomb = Mathf.Abs(testPos.x - bombPos.x) + Mathf.Abs(testPos.y - bombPos.y);
-            
-            if (distanceToBomb >= safeDistance && IsTileSafe(testPos))
+            for (int dist = safeDistance; dist <= safeDistance + 3; dist++)
             {
-                Debug.Log($"✅ Posição segura encontrada: {testPos} (distância da bomba: {distanceToBomb})");
-                return testPos;
-            }
-        }
-    }
-    
-    // Se não encontrou posição segura, tenta qualquer posição transitável longe da bomba
-    Debug.LogWarning("⚠️ Nenhuma posição 100% segura encontrada, procurando alternativas...");
-    
-    foreach (Vector3Int dir in directions)
-    {
-        for (int dist = bombRadius + 1; dist <= bombRadius + 4; dist++)
-        {
-            Vector3Int testPos = currentCell + (dir * dist);
-            
-            // Verifica se pelo menos não é obstacle
-            if (!IsObstacle(testPos))
-            {
+                Vector3Int testPos = currentCell + (dir * dist);
+
+                // Verifica se está longe o suficiente da bomba
                 int distanceToBomb = Mathf.Abs(testPos.x - bombPos.x) + Mathf.Abs(testPos.y - bombPos.y);
-                Debug.Log($"⚠️ Posição alternativa: {testPos} (distância: {distanceToBomb})");
-                return testPos;
+
+                if (distanceToBomb >= safeDistance && IsTileSafe(testPos))
+                {
+                    return testPos;
+                }
             }
         }
+
+
+        foreach (Vector3Int dir in directions)
+        {
+            for (int dist = bombRadius + 1; dist <= bombRadius + 4; dist++)
+            {
+                Vector3Int testPos = currentCell + (dir * dist);
+
+                // Verifica se pelo menos não é obstacle
+                if (!IsObstacle(testPos))
+                {
+                    int distanceToBomb = Mathf.Abs(testPos.x - bombPos.x) + Mathf.Abs(testPos.y - bombPos.y);
+                    return testPos;
+                }
+            }
+        }
+        return Vector3Int.zero;
     }
-    
-    Debug.LogError("❌ Nenhuma posição segura encontrada!");
-    return Vector3Int.zero;
-}
-private void CheckPreciseBombDanger()
+    private void CheckPreciseBombDanger()
     {
         Vector3Int currentCell = undestructibleTiles.WorldToCell(transform.position);
         GameObject[] allBombs = GameObject.FindGameObjectsWithTag("Bomb");
@@ -1462,8 +1402,6 @@ private void CheckPreciseBombDanger()
                 {
                     float remainingTime = bomb.RemainingTime;
 
-                    Debug.Log($"⚠️ Bomba perigosa detectada! Posição: {bombObj.transform.position}, Tempo restante: {remainingTime:F1}s, Raio: {bomb.explosionRadius}");
-
                     // Encontra a bomba com menor tempo restante
                     if (remainingTime < shortestTime)
                     {
@@ -1480,7 +1418,7 @@ private void CheckPreciseBombDanger()
             StartPreciseFleeFromBomb(mostDangerousBomb);
         }
     }
-// === VERSÃO APRIMORADA PARA MÚLTIPLAS BOMBAS ===
+    // === VERSÃO APRIMORADA PARA MÚLTIPLAS BOMBAS ===
     private void CheckMultipleBombDanger()
     {
         Vector3Int currentCell = undestructibleTiles.WorldToCell(transform.position);
@@ -1500,7 +1438,6 @@ private void CheckPreciseBombDanger()
 
         if (dangerousBombs.Count > 0)
         {
-            Debug.Log($"⚠️ {dangerousBombs.Count} bombas perigosas detectadas!");
 
             // Ordena por tempo restante (menor primeiro)
             dangerousBombs.Sort((a, b) => a.RemainingTime.CompareTo(b.RemainingTime));
@@ -1508,7 +1445,6 @@ private void CheckPreciseBombDanger()
             // Foge da mais perigosa
             Bomb mostUrgent = dangerousBombs[0];
 
-            Debug.Log($"🎯 Bomba mais urgente: {mostUrgent.RemainingTime:F1}s restantes");
 
             StartPreciseFleeFromBomb(mostUrgent);
         }

@@ -64,8 +64,6 @@ public class Bomb : MonoBehaviour
 
         fuseCoroutine = ExplodeAfterDelay();
         StartCoroutine(fuseCoroutine);
-        
-        Debug.Log($"💣 Bomba plantada! Tempo: {fuseTime}s, Raio: {explosionRadius}");
     }
 
     private void Update()
@@ -114,7 +112,6 @@ public class Bomb : MonoBehaviour
         
         if (!IsExploded) // Só explode se não foi detonada antes
         {
-            Debug.Log($"💥 Bomba explodiu por timer!");
             Explode();
         }
     }

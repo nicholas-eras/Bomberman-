@@ -12,35 +12,85 @@ public class ItemPickup : MonoBehaviour
 
     public ItemType type;
 
-    private void OnItemPickup(GameObject player)
+    private void OnItemPickup(GameObject entity)
     {
-        switch (type)
+        // Diferencia por componente: se tem BotController é bot, senão é player
+        BotController botController = entity.GetComponent<BotController>();
+        
+        if (botController != null)
         {
-            case ItemType.ExtraBomb:
-                player.GetComponent<BombController>().AddBomb();
-                break;
-
-            case ItemType.BlastRadius:
-                player.GetComponent<BombController>().explosionRadius++;
-                break;
-
-            case ItemType.SpeedIncrease:
-                player.GetComponent<MovementController>().speed+=0.5f;
-                break;
-
-            case ItemType.KickBomb:
-                player.GetComponent<MovementController>().canKickBomb = true;
-                break;
+            HandleBotPickup(entity);
+            Debug.Log($"Bot pegou item: {type}");
+        }
+        else
+        {
+            HandlePlayerPickup(entity);
+            Debug.Log($"Player pegou item: {type}");
         }
 
         Destroy(gameObject);
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void HandlePlayerPickup(GameObject player)
     {
-        if (other.CompareTag("Player")) {
-            OnItemPickup(other.gameObject);
+        switch (type)
+        {
+            case ItemType.ExtraBomb:
+                var bombController = player.GetComponent<BombController>();
+                if (bombController != null)
+                    bombController.AddBomb();
+                break;
+
+            case ItemType.BlastRadius:
+                var bombCtrl = player.GetComponent<BombController>();
+                if (bombCtrl != null)
+                    bombCtrl.explosionRadius++;
+                break;
+
+            case ItemType.SpeedIncrease:
+                var movementController = player.GetComponent<MovementController>();
+                if (movementController != null)
+                    movementController.speed += 0.5f;
+                break;
+
+            case ItemType.KickBomb:
+                var moveCtrl = player.GetComponent<MovementController>();
+                if (moveCtrl != null)
+                    moveCtrl.canKickBomb = true;
+                break;
         }
     }
 
+    private void HandleBotPickup(GameObject bot)
+    {
+        BotController botController = bot.GetComponent<BotController>();
+        if (botController == null) return;
+
+        switch (type)
+        {
+            case ItemType.ExtraBomb:
+                botController.bombAmount++;
+                break;
+
+            case ItemType.BlastRadius:                
+                botController.explosionRadius++;
+                break;
+
+            case ItemType.SpeedIncrease:
+                botController.speed += 0.5f;
+                break;
+
+            case ItemType.KickBomb:
+                botController.canKickBomb = true;
+                break;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            OnItemPickup(other.gameObject);
+        }
+    }
 }
