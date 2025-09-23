@@ -55,6 +55,7 @@ public class BotController : MonoBehaviour
     private bool isFleeingFromBomb = false;
     private Vector3Int lastBombPosition;
     private float bombPlacedTime;
+    private readonly float BotRadiusSearch = 4f;
 
     // Lista de posições de bombas ativas para evitar
     private List<Vector3Int> activeBombPositions = new List<Vector3Int>();
@@ -698,8 +699,8 @@ private void StopFleeingFromBomb()
             DrawPathToSafeTile(currentCell, nearestSafeTile);
         }
 
-        // Verifica raio 1 e 2
-        for (int radius = 1; radius <= 2; radius++)
+        // Verifica raio 1 e BotRadiusSearch
+        for (int radius = 1; radius <= BotRadiusSearch; radius++)
         {
             for (int x = -radius; x <= radius; x++)
             {
