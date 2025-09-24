@@ -8,7 +8,16 @@ using Priority_Queue;
 public class BotController : MonoBehaviour
 {
     [Header("References")]
-    public Transform player;
+    public List<Transform> potentialTargets = new List<Transform>(); // Lista de possíveis alvos
+    public float targetSwitchInterval = 3f; // Muda de alvo a cada X segundos
+    public bool targetRandomly = true; // Se true, escolhe aleatório. Se false, escolhe o mais próximo
+
+    // === 2. ADICIONAR VARIÁVEIS PRIVADAS ===
+    private Transform currentTarget; // Alvo atual que o bot está perseguindo
+    private float lastTargetSwitchTime = 0f;
+    private Vector3 currentMoveTarget; // Para armazenar posição de movimento atual
+
+
     [Header("Tilemaps")]
     public Tilemap undestructibleTiles;
     public Tilemap destructibleTiles;
@@ -42,7 +51,6 @@ public class BotController : MonoBehaviour
     private AnimatedSpriteRenderer activeSpriteRenderer;
 
     private Queue<Vector3> pathQueue = new Queue<Vector3>();
-    private Vector3 currentTarget;
     private bool isMoving = false;
 
     // Variáveis para movimento suave e alinhado
@@ -62,6 +70,33 @@ public class BotController : MonoBehaviour
     private List<Vector3Int> activeBombPositions = new List<Vector3Int>();
 
     private Coroutine fleeTimerCoroutine;
+
+
+    // === 1. ADICIONAR NO HEADER (após Bomb Settings) ===
+    [Header("Special Move Settings")]
+    public GameObject explosionPrefabGO;        // prefab da explosão especial
+    public float specialMoveCooldown = 8f;      // cooldown entre especiais
+    public int specialExplosionDistance = 9;    // alcance do especial
+    public float specialExplosionDuration = 0.5f;
+    public float specialMoveChance = 0.3f;      // 30% chance de usar quando possível
+    public float playerDistanceForSpecial = 5f; // distância mínima do player para usar
+
+    // === 2. ADICIONAR SPRITES ESPECIAIS (após sprites normais) ===
+    // Sprites do special move
+    public AnimatedSpriteRenderer spriteSpecialMove;
+    public AnimatedSpriteRenderer spriteSpecialMoveUp;
+    public AnimatedSpriteRenderer spriteSpecialMoveDown;
+    public AnimatedSpriteRenderer spriteSpecialMoveRight;
+    public AnimatedSpriteRenderer spriteSpecialMoveLeft;
+
+    // === 3. ADICIONAR VARIÁVEIS PRIVADAS (após activeBombPositions) ===
+    // === VARIÁVEIS DO SPECIAL MOVE ===
+    private Explosion specialExplosionPrefab;
+    private float lastSpecialMoveTime = -999f;
+    private bool isPerformingSpecialMove = false;
+    private float specialMoveDecisionTimer = 0f;
+    private readonly float specialDecisionInterval = 2f; // avalia usar special a cada 2s
+
 
     // === FUNÇÃO DE TIMER DE FUGA ===
     private IEnumerator FleeTimer(float fleeTime)
@@ -97,15 +132,25 @@ public class BotController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         activeSpriteRenderer = spriteRendererDown;
         bombsRemaining = bombAmount;
-
-        if (player == null)
+        if (explosionPrefabGO != null)
         {
-            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-            if (playerObj != null)
+            specialExplosionPrefab = explosionPrefabGO.GetComponent<Explosion>();
+        }
+
+        if (potentialTargets.Count == 0)
+        {
+            // Busca automaticamente objetos com tag "Player"
+            GameObject[] playerObjs = GameObject.FindGameObjectsWithTag("Player");
+            foreach (GameObject obj in playerObjs)
             {
-                player = playerObj.transform;
+                if (obj.transform != this.transform) // Não adiciona a si mesmo
+                {
+                    potentialTargets.Add(obj.transform);
+                }
             }
         }
+
+        ChooseNewTarget();
 
         // Ignora colisão entre bot e player/bots
         int botLayer = LayerMask.NameToLayer("Player");
@@ -117,7 +162,7 @@ public class BotController : MonoBehaviour
 
     private void Start()
     {
-        if (player == null)
+        if (currentTarget == null || potentialTargets.Count == 0)
         {
             return;
         }
@@ -130,9 +175,11 @@ public class BotController : MonoBehaviour
         ForceSnapToGrid();
 
         Vector3Int botCell = undestructibleTiles.WorldToCell(transform.position);
-        Vector3Int playerCell = undestructibleTiles.WorldToCell(player.position);
+        Vector3Int playerCell = undestructibleTiles.WorldToCell(currentTarget.position);
 
         InvokeRepeating(nameof(UpdatePath), 0f, pathUpdateRate);
+
+        lastSpecialMoveTime = -Random.Range(0f, specialMoveCooldown);
     }
 
     private void ForceSnapToGrid()
@@ -147,10 +194,38 @@ public class BotController : MonoBehaviour
             transform.position = centeredPosition;
         }
     }
+// === 8. FUNÇÕES AUXILIARES OPCIONAIS ===
+[ContextMenu("Choose Random Target")]
+public void ChooseRandomTarget()
+{
+    bool oldMode = targetRandomly;
+    targetRandomly = true;
+    ChooseNewTarget();
+    targetRandomly = oldMode;
+}
 
+[ContextMenu("Choose Closest Target")]
+public void ChooseClosestTarget()
+{
+    bool oldMode = targetRandomly;
+    targetRandomly = false;
+    ChooseNewTarget();
+    targetRandomly = oldMode;
+}
+
+public Transform GetCurrentTarget()
+{
+    return currentTarget;
+}
+
+public int GetTargetCount()
+{
+    potentialTargets.RemoveAll(target => target == null);
+    return potentialTargets.Count;
+}
     private void UpdatePath()
     {
-        if (player == null || isPlacingBomb) return;
+        if (currentTarget  == null || isPlacingBomb || isPerformingSpecialMove) return;
 
         // Durante a fuga, não atualiza o caminho para o player
         if (isFleeingFromBomb)
@@ -163,7 +238,7 @@ public class BotController : MonoBehaviour
             CheckPreciseBombDanger();
         }
 
-        List<Vector3> path = FindPath(transform.position, player.position);
+        List<Vector3> path = FindPath(transform.position, currentTarget.position);
 
         if (path != null && path.Count > 0)
         {
@@ -216,7 +291,7 @@ public class BotController : MonoBehaviour
         }
 
         // Remove da fila agora que validamos
-        currentTarget = pathQueue.Dequeue();
+        currentMoveTarget = pathQueue.Dequeue();
 
         // Verifica bomba em tile destrutível
         if (destructibleTiles != null && destructibleTiles.HasTile(nextTargetCell) && bombsRemaining > 0)
@@ -244,7 +319,7 @@ public class BotController : MonoBehaviour
         }
 
         // === FUNDAMENTAL: USA O CENTRO CORRETO COMO TARGET ===
-        currentTarget = undestructibleTiles.GetCellCenterWorld(nextTargetCell);
+        currentMoveTarget = undestructibleTiles.GetCellCenterWorld(nextTargetCell);
 
         isMovingToTarget = true;
         isMoving = true;
@@ -291,9 +366,257 @@ public class BotController : MonoBehaviour
         ForceSnapToGrid();
     }
 
+    private void Update()
+    {
+        // Avalia se deve usar special move
+        specialMoveDecisionTimer += Time.deltaTime;
+        if (specialMoveDecisionTimer >= specialDecisionInterval)
+        {
+            specialMoveDecisionTimer = 0f;
+            EvaluateSpecialMoveUsage();
+        }
+        if (Time.time - lastTargetSwitchTime >= targetSwitchInterval)
+        {
+            ChooseNewTarget();
+            lastTargetSwitchTime = Time.time;
+        }
+    }
+
+    private void ChooseNewTarget()
+{
+    // Remove alvos nulos da lista
+    potentialTargets.RemoveAll(target => target == null);
+
+    if (potentialTargets.Count == 0)
+    {
+        currentTarget = null;
+        return;
+    }
+
+    if (targetRandomly)
+    {
+        // Escolhe alvo aleatório
+        int randomIndex = Random.Range(0, potentialTargets.Count);
+        currentTarget = potentialTargets[randomIndex];
+    }
+    else
+    {
+        // Escolhe o alvo mais próximo
+        Transform closestTarget = null;
+        float closestDistance = float.MaxValue;
+
+        foreach (Transform target in potentialTargets)
+        {
+            if (target == null) continue;
+
+            float distance = Vector3.Distance(transform.position, target.position);
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                closestTarget = target;
+            }
+        }
+
+        currentTarget = closestTarget;
+    }
+
+    lastTargetSwitchTime = Time.time;
+}
+
+public void AddTarget(Transform newTarget)
+{
+    if (newTarget != null && !potentialTargets.Contains(newTarget) && newTarget != this.transform)
+    {
+        potentialTargets.Add(newTarget);
+    }
+}
+
+public void RemoveTarget(Transform targetToRemove)
+{
+    potentialTargets.Remove(targetToRemove);
+    
+    // Se removeu o alvo atual, escolhe um novo
+    if (currentTarget == targetToRemove)
+    {
+        ChooseNewTarget();
+    }
+}
+
+    private void EvaluateSpecialMoveUsage()
+    {
+        // Não usa special se já está performando um, fugindo, ou colocando bomba
+        if (isPerformingSpecialMove || isFleeingFromBomb || isPlacingBomb)
+            return;
+
+        // Verifica cooldown
+        if (Time.time - lastSpecialMoveTime < specialMoveCooldown)
+            return;
+
+        // Verifica se o player está próximo o suficiente
+        if (currentTarget  == null)
+            return;
+
+        float distanceToPlayer = Vector3.Distance(transform.position, currentTarget.position);
+        if (distanceToPlayer > playerDistanceForSpecial)
+            return;
+
+        // Chance aleatória de usar
+        if (Random.Range(0f, 1f) > specialMoveChance)
+            return;
+
+        // Encontra a melhor direção para o special
+        Vector2 bestDirection = FindBestSpecialDirection();
+        if (bestDirection != Vector2.zero)
+        {
+            StartCoroutine(PerformSpecialMove(bestDirection));
+        }
+    }
+
+    private Vector2 FindBestSpecialDirection()
+    {
+        Vector3Int currentCell = undestructibleTiles.WorldToCell(transform.position);
+        Vector2[] directions = { Vector2.up, Vector2.down, Vector2.left, Vector2.right };
+        
+        Vector2 bestDirection = Vector2.zero;
+        int bestScore = 0;
+
+        foreach (Vector2 dir in directions)
+        {
+            int score = EvaluateSpecialDirection(currentCell, dir);
+            if (score > bestScore)
+            {
+                bestScore = score;
+                bestDirection = dir;
+            }
+        }
+
+        // Só usa se tiver uma pontuação mínima (pelo menos 2 pontos)
+        return bestScore >= 2 ? bestDirection : Vector2.zero;
+    }
+
+    private int EvaluateSpecialDirection(Vector3Int startCell, Vector2 direction)
+    {
+        int score = 0;
+        Vector3Int currentCell = startCell;
+        Vector3Int dirInt = new Vector3Int(Mathf.RoundToInt(direction.x), Mathf.RoundToInt(direction.y), 0);
+
+        for (int i = 1; i <= specialExplosionDistance; i++)
+        {
+            currentCell += dirInt;
+
+            // Para se encontrar parede indestrutível
+            if (undestructibleTiles.HasTile(currentCell))
+                break;
+
+            // Pontos por destruir blocos destrutíveis
+            if (destructibleTiles.HasTile(currentCell))
+            {
+                score += 3;
+                break; // Explosão para no primeiro bloco destrutível
+            }
+
+            // Pontos se o player estiver nessa direção (mas não muito próximo)
+            if (currentTarget != null)
+            {
+                Vector3Int playerCell = undestructibleTiles.WorldToCell(currentTarget.position);
+                if (currentCell == playerCell && i > 2) // Pelo menos 2 células de distância
+                {
+                    score += 5;
+                }
+            }
+
+            // Pontos por alcance (quanto mais longe, melhor, mas diminui com distância)
+            score += Mathf.Max(0, 2 - (i / 3));
+        }
+
+        return score;
+    }
+
+    private IEnumerator PerformSpecialMove(Vector2 direction)
+    {
+        isPerformingSpecialMove = true;
+        lastSpecialMoveTime = Time.time;
+
+        // Para o movimento atual
+        StopMovement();
+
+        // Escolhe a animação correta baseada na direção
+        AnimatedSpriteRenderer specialSprite = GetSpecialSpriteForDirection(direction);
+        
+        // Ativa animação especial
+        SetAnimation(specialSprite, true);
+
+        // Aguarda o tempo de carregamento (mesmo do player)
+        yield return new WaitForSeconds(0.4f);
+
+        // Executa a explosão
+        SpawnSpecialExplosion(direction);
+
+        // Aguarda um pouco após a explosão
+        yield return new WaitForSeconds(0.3f);
+
+        // Volta ao estado normal
+        isPerformingSpecialMove = false;
+        SetAnimation(activeSpriteRenderer);
+    }
+
+    private AnimatedSpriteRenderer GetSpecialSpriteForDirection(Vector2 direction)
+    {
+        if (direction == Vector2.up) return spriteSpecialMoveUp;
+        if (direction == Vector2.down) return spriteSpecialMoveDown;
+        if (direction == Vector2.left) return spriteSpecialMoveLeft;
+        if (direction == Vector2.right) return spriteSpecialMoveRight;
+        return spriteSpecialMove; // fallback
+    }
+
+    private void SpawnSpecialExplosion(Vector2 direction)
+    {
+        if (specialExplosionPrefab == null) return;
+
+        // Centraliza na célula do bot
+        Vector3 startPos = rb.position;
+        if (destructibleTiles != null)
+        {
+            Vector3Int cell = destructibleTiles.WorldToCell(rb.position);
+            startPos = destructibleTiles.GetCellCenterWorld(cell);
+        }
+
+        // Cria a rajada começando uma célula à frente
+        Vector3 explosionStart = startPos + (Vector3)direction;
+
+        GameObject bombObj = new GameObject("BotSpecialExplosion");
+        bombObj.transform.position = explosionStart;
+
+        Bomb bomb = bombObj.AddComponent<Bomb>();
+        bomb.Init(
+            0f,                           // fuseTime (explode imediatamente)
+            specialExplosionDistance,     // explosionRadius
+            specialExplosionDuration,     // explosionDuration
+            specialExplosionPrefab,       // componente Explosion
+            explosionLayerMask,
+            destructibleTiles,
+            undestructibleTiles,
+            destructiblePrefab,
+            itemDestructiblePrefab
+        );
+
+        // Rajada só na direção especificada
+        bomb.ExplodeInDirection(direction, bomb.explosionRadius);
+    }
+
+    [ContextMenu("Force Special Move")]
+    public void ForceSpecialMove()
+    {
+        Vector2 bestDir = FindBestSpecialDirection();
+        if (bestDir != Vector2.zero)
+        {
+            StartCoroutine(PerformSpecialMove(bestDir));
+        }
+    }
+
     void FixedUpdate()
     {
-        if (!isMoving) return;
+        if (!isMoving || isPerformingSpecialMove) return;
 
         if (isMovingToTarget)
         {
@@ -302,8 +625,8 @@ public class BotController : MonoBehaviour
             if (moveProgress >= 1f)
             {
                 // Chegou no target
-                moveProgress = 1f;
-                transform.position = currentTarget;
+                moveProgress = 1f;                
+                transform.position = currentMoveTarget;
                 isMovingToTarget = false;
 
                 // Verifica próximo target
@@ -312,7 +635,7 @@ public class BotController : MonoBehaviour
             else
             {
                 // Ainda movendo
-                transform.position = Vector3.Lerp(moveStartPosition, currentTarget, moveProgress);
+                transform.position = Vector3.Lerp(moveStartPosition, currentMoveTarget, moveProgress);
             }
         }
     }
@@ -347,12 +670,33 @@ public class BotController : MonoBehaviour
         }
     }
 
-    private void SetAnimation(AnimatedSpriteRenderer spriteRenderer)
+    private void SetAnimation(AnimatedSpriteRenderer spriteRenderer, bool isSpecial = false)
     {
         spriteRendererUp.enabled = false;
         spriteRendererDown.enabled = false;
         spriteRendererLeft.enabled = false;
         spriteRendererRight.enabled = false;
+
+        // Desabilita todos os sprites especiais
+        if (spriteSpecialMove != null) spriteSpecialMove.enabled = false;
+        if (spriteSpecialMoveUp != null) spriteSpecialMoveUp.enabled = false;
+        if (spriteSpecialMoveDown != null) spriteSpecialMoveDown.enabled = false;
+        if (spriteSpecialMoveRight != null) spriteSpecialMoveRight.enabled = false;
+        if (spriteSpecialMoveLeft != null) spriteSpecialMoveLeft.enabled = false;
+
+        // Ativa o sprite correto
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.enabled = true;
+            activeSpriteRenderer = spriteRenderer;
+            activeSpriteRenderer.idle = direction == Vector2.zero;
+            
+            if (isSpecial)
+            {
+                activeSpriteRenderer.idle = false;
+                activeSpriteRenderer.RestartAnimation();
+            }
+        }
 
         spriteRenderer.enabled = true;
         activeSpriteRenderer = spriteRenderer;
@@ -514,8 +858,10 @@ public class BotController : MonoBehaviour
             if (isMovingToTarget)
             {
                 Gizmos.color = Color.yellow;
-                Gizmos.DrawWireSphere(currentTarget, 0.2f);
-                Gizmos.DrawLine(transform.position, currentTarget);
+                // CORREÇÃO LINHA 860: Usar currentMoveTarget
+                Gizmos.DrawWireSphere(currentMoveTarget, 0.2f);
+                // CORREÇÃO LINHA 861: Usar currentMoveTarget
+                Gizmos.DrawLine(transform.position, currentMoveTarget);
             }
         }
 
@@ -553,6 +899,29 @@ public class BotController : MonoBehaviour
             // === NOVA PARTE: DEBUG VISUAL DOS ARREDORES ===
             DrawSurroundingsGizmos(currentCell);
         }
+
+   if (currentTarget != null)
+    {
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawLine(transform.position, currentTarget.position);
+        Gizmos.DrawWireSphere(currentTarget.position, 0.5f);
+        
+#if UNITY_EDITOR
+        UnityEditor.Handles.color = Color.cyan;
+        Vector3 midPoint = (transform.position + currentTarget.position) * 0.5f;
+        UnityEditor.Handles.Label(midPoint, "CURRENT TARGET");
+#endif
+    }
+    
+    // Desenha todos os alvos potenciais
+    Gizmos.color = Color.yellow;
+    foreach (Transform target in potentialTargets)
+    {
+        if (target != null && target != currentTarget)
+        {
+            Gizmos.DrawWireSphere(target.position, 0.3f);
+        }
+    }
     }
 
     // Nova função para desenhar bombas em uma célula específica
