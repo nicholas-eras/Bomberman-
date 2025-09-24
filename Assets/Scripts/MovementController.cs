@@ -43,7 +43,17 @@ public class MovementController : MonoBehaviour
     [SerializeField] private LayerMask explosionLayerMask;
 
     private Explosion explosionPrefab;          // componente Explosion que vamos usar
- 
+    // Adicione ou modifique o Start() em AMBOS os scripts (BotController e MovementController)
+    private void Start()
+    {
+        // ...seu outro código do Start, se houver...
+
+        // Personagem se apresenta ao GameManager
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.RegisterCharacter(this.gameObject);
+        }
+    }
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -188,10 +198,24 @@ private IEnumerator DoSpecialExplosion(Vector2 dir, AnimatedSpriteRenderer speci
         this.Invoke(nameof(this.OnDeathSequenceEnded), 1.25f);
     }
 
+    // Em BotController.cs e MovementController.cs
     private void OnDeathSequenceEnded()
     {
+        // AVISA o GameManager que morreu
+        if (GameManager.Instance != null)
+        {
+            // O GameManager irá cuidar da destruição do objeto
+            GameManager.Instance.CharacterDied(this.gameObject);
+        }
+        else
+        {
+            // Fallback caso não tenha GameManager na cena
+            Destroy(gameObject);
+        }
+        
+        // Desativa o objeto imediatamente para que ele "suma"
+        // enquanto o GameManager faz a limpeza.
         this.gameObject.SetActive(false);
-        GameManager.Instance.CheckWinState();
     }
 
     public Vector2 GetMoveDirection()
@@ -229,6 +253,7 @@ private IEnumerator DoSpecialExplosion(Vector2 dir, AnimatedSpriteRenderer speci
             destructiblePrefab,
             itemDestructiblePrefab
         );
+        bomb.owner = this.gameObject;
 
         // Rajada só na direção
         bomb.ExplodeInDirection(direction, bomb.explosionRadius);

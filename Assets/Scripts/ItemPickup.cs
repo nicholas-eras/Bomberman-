@@ -68,6 +68,7 @@ public class ItemPickup : MonoBehaviour
         {
             case ItemType.ExtraBomb:
                 botController.bombAmount++;
+                botController.AddBombToStock();
                 break;
 
             case ItemType.BlastRadius:                

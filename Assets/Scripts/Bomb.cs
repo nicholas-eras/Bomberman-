@@ -31,6 +31,8 @@ public class Bomb : MonoBehaviour
     public float moveSpeed = 20f;
     private Vector2 playerPosition;
     private IEnumerator fuseCoroutine;
+    public GameObject owner; // Quem colocou a bomba
+    [HideInInspector] public bool isKicked = false;
 
     public void Init(
         float fuseTime,
@@ -85,11 +87,23 @@ public class Bomb : MonoBehaviour
             {
                 isMoving = false;
                 rb.velocity = Vector2.zero;
+                isKicked = false; // Permite que seja chutada novamente
                 return;
             }
 
             rb.MovePosition(nextPos);
         }
+    }
+
+    public void Kick(Vector2 direction)
+    {
+        if (isKicked) return;
+
+        isKicked = true;
+        moveDirection = direction.normalized;
+        isMoving = true;
+        // Reinicia o timer do fusível ao ser chutada (opcional, mas adiciona dinâmica)
+        // plantTime = Time.time; 
     }
 
     private void OnTriggerEnter2D(Collider2D other)

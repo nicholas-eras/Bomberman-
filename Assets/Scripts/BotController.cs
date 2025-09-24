@@ -70,6 +70,7 @@ public class BotController : MonoBehaviour
     private List<Vector3Int> activeBombPositions = new List<Vector3Int>();
 
     private Coroutine fleeTimerCoroutine;
+    private bool isExecutingAttackPlan = false; // Trava para o bot se comprometer com o plano de ataque
 
 
     // === 1. ADICIONAR NO HEADER (após Bomb Settings) ===
@@ -96,8 +97,98 @@ public class BotController : MonoBehaviour
     private bool isPerformingSpecialMove = false;
     private float specialMoveDecisionTimer = 0f;
     private readonly float specialDecisionInterval = 2f; // avalia usar special a cada 2s
+                                                         // === NOVAS VARIÁVEIS PARA GERENCIAR OBJETIVOS ===
+    private Transform currentObjective; // O alvo real (pode ser um jogador ou um item)
+    private List<ItemPickup> activeItems = new List<ItemPickup>(); // Cache de itens no mapa
+    private float lastObjectiveUpdateTime = 0f;
+    private readonly float objectiveUpdateRate = 1.5f; // A cada 1.5s, ele reavalia o que é mais importante
+                                                       // ===============================================
 
+    private void UpdateObjectives()
+    {
+        // Limpa itens que já foram coletados
+        activeItems.RemoveAll(item => item == null);
 
+        // Encontra novos itens no mapa
+        ItemPickup[] itemsInScene = FindObjectsOfType<ItemPickup>();
+        foreach (var item in itemsInScene)
+        {
+            if (!activeItems.Contains(item))
+            {
+                activeItems.Add(item);
+            }
+        }
+
+        // --- LÓGICA DE PONTUAÇÃO ---
+        Transform bestTarget = null;
+        float bestScore = -1f;
+
+        // 1. Avalia o jogador como um alvo
+        if (currentTarget != null)
+        {
+            float playerScore = CalculateTargetScore(currentTarget.transform);
+            if (playerScore > bestScore)
+            {
+                bestScore = playerScore;
+                bestTarget = currentTarget.transform;
+            }
+        }
+
+        // 2. Avalia cada item como um alvo
+        foreach (var item in activeItems)
+        {
+            if (item == null) continue;
+
+            float itemScore = CalculateTargetScore(item.transform);
+            if (itemScore > bestScore)
+            {
+                bestScore = itemScore;
+                bestTarget = item.transform;
+            }
+        }
+
+        // Define o novo objetivo
+        currentObjective = bestTarget;
+    }
+
+    private float CalculateTargetScore(Transform target)
+    {
+        if (target == null) return 0f;
+
+        float score = 0f;
+        float distance = Vector3.Distance(transform.position, target.position);
+        if (distance < 0.1f) distance = 0.1f; // Evita divisão por zero
+
+        // Se o alvo é um item
+        ItemPickup item = target.GetComponent<ItemPickup>();
+        if (item != null)
+        {
+            switch (item.type)
+            {
+                case ItemPickup.ItemType.ExtraBomb:
+                    score = 80f; // Muito valioso
+                    break;
+                case ItemPickup.ItemType.BlastRadius:
+                    score = 60f;
+                    break;
+                case ItemPickup.ItemType.SpeedIncrease:
+                    score = 60f;
+                    break;
+                case ItemPickup.ItemType.KickBomb:
+                    score = canKickBomb ? 0f : 100f; // Prioridade máxima se ainda não tiver
+                    break;
+            }
+        }
+        // Se o alvo é um jogador (ou qualquer outra coisa sem o script ItemPickup)
+        else
+        {
+            score = 70f; // Pontuação base para perseguir um inimigo
+        }
+
+        // A pontuação final é a prioridade dividida pela distância.
+        // Itens/jogadores mais próximos são mais atraentes.
+        return score / distance;
+    }
     // === FUNÇÃO DE TIMER DE FUGA ===
     private IEnumerator FleeTimer(float fleeTime)
     {
@@ -173,13 +264,19 @@ public class BotController : MonoBehaviour
         }
 
         ForceSnapToGrid();
-
+        ChooseNewTarget(); // Escolhe o alvo inicial (jogador)
+        currentObjective = currentTarget; // Define o objetivo inicial
         Vector3Int botCell = undestructibleTiles.WorldToCell(transform.position);
         Vector3Int playerCell = undestructibleTiles.WorldToCell(currentTarget.position);
 
         InvokeRepeating(nameof(UpdatePath), 0f, pathUpdateRate);
 
         lastSpecialMoveTime = -Random.Range(0f, specialMoveCooldown);
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.RegisterCharacter(this.gameObject);
+        }
     }
 
     private void ForceSnapToGrid()
@@ -194,68 +291,196 @@ public class BotController : MonoBehaviour
             transform.position = centeredPosition;
         }
     }
-// === 8. FUNÇÕES AUXILIARES OPCIONAIS ===
-[ContextMenu("Choose Random Target")]
-public void ChooseRandomTarget()
-{
-    bool oldMode = targetRandomly;
-    targetRandomly = true;
-    ChooseNewTarget();
-    targetRandomly = oldMode;
-}
+    // === 8. FUNÇÕES AUXILIARES OPCIONAIS ===
+    [ContextMenu("Choose Random Target")]
+    public void ChooseRandomTarget()
+    {
+        bool oldMode = targetRandomly;
+        targetRandomly = true;
+        ChooseNewTarget();
+        targetRandomly = oldMode;
+    }
 
-[ContextMenu("Choose Closest Target")]
-public void ChooseClosestTarget()
-{
-    bool oldMode = targetRandomly;
-    targetRandomly = false;
-    ChooseNewTarget();
-    targetRandomly = oldMode;
-}
+    [ContextMenu("Choose Closest Target")]
+    public void ChooseClosestTarget()
+    {
+        bool oldMode = targetRandomly;
+        targetRandomly = false;
+        ChooseNewTarget();
+        targetRandomly = oldMode;
+    }
 
-public Transform GetCurrentTarget()
-{
-    return currentTarget;
-}
+    public Transform GetCurrentTarget()
+    {
+        return currentTarget;
+    }
 
-public int GetTargetCount()
-{
-    potentialTargets.RemoveAll(target => target == null);
-    return potentialTargets.Count;
-}
+    public int GetTargetCount()
+    {
+        potentialTargets.RemoveAll(target => target == null);
+        return potentialTargets.Count;
+    }
+
+    // Em BotController.cs
     private void UpdatePath()
     {
-        if (currentTarget  == null || isPlacingBomb || isPerformingSpecialMove) return;
+        if (isMovingToTarget) return;
 
-        // Durante a fuga, não atualiza o caminho para o player
+        if (currentTarget == null || isPlacingBomb || isPerformingSpecialMove) return;
+
         if (isFleeingFromBomb)
         {
+            // Mesmo fugindo, ele pode considerar um chute defensivo.
+            if (canKickBomb && EvaluateKickOpportunity(true)) // O 'true' indica modo defensivo
+            {
+                return;
+            }
             return;
         }
 
         if (!isFleeingFromBomb)
         {
             CheckPreciseBombDanger();
+            if (isFleeingFromBomb) return;
         }
 
-        List<Vector3> path = FindPath(transform.position, currentTarget.position);
+        // === LÓGICA DE AVALIAÇÃO DE CHUTE OFENSIVO ===
+        // O 'false' indica modo ofensivo
+        if (canKickBomb && EvaluateKickOpportunity(false))
+        {
+            return; // Se agimos, paramos o ciclo de decisão aqui.
+        }
+        // ===========================================
 
-        if (path != null && path.Count > 0)
+        if (EvaluateBombPlacementOpportunity()) return;
+
+        if (currentObjective == null) currentObjective = currentTarget;
+        List<Vector3> path = FindPath(transform.position, currentObjective.position);
+
+        if (path != null && path.Count > 1)
         {
             pathQueue.Clear();
-
             for (int i = 1; i < path.Count; i++)
             {
                 pathQueue.Enqueue(path[i]);
             }
-
-            if (!isMovingToTarget)
-            {
-                MoveToNextTarget();
-            }
+            MoveToNextTarget();
         }
     }
+    // Adicione esta função inteira ao BotController.cs
+    private bool EvaluateKickOpportunity(bool isDefensive)
+    {
+        Bomb[] allBombs = FindObjectsOfType<Bomb>();
+        if (allBombs.Length == 0) return false;
 
+        Vector3Int botCell = undestructibleTiles.WorldToCell(transform.position);
+
+        Vector3Int bestApproachCell = Vector3Int.zero;
+        float highestScore = 0;
+        List<Vector3> bestPath = null;
+
+        foreach (Bomb bomb in allBombs)
+        {
+            // O bot só chuta bombas inimigas
+            if (bomb.owner == this.gameObject || bomb.isKicked || bomb.IsAboutToExplode(1.2f)) continue;
+
+            Vector3Int bombCell = undestructibleTiles.WorldToCell(bomb.transform.position);
+
+            Vector2[] directions = { Vector2.up, Vector2.down, Vector2.left, Vector2.right };
+            foreach (Vector2 dir in directions)
+            {
+                // A "célula de aproximação" é oposta à direção do chute
+                Vector3Int approachCell = bombCell - new Vector3Int(Mathf.RoundToInt(dir.x), Mathf.RoundToInt(dir.y), 0);
+
+                // Pula se a célula de aproximação for um obstáculo
+                if (IsObstacle(approachCell)) continue;
+
+                // Passo 3: Avalia o resultado
+                float outcomeScore = ScoreKickTrajectory(bombCell, dir, isDefensive);
+                if (outcomeScore <= 0) continue;
+
+                // Passo 4: Calcula Custo e Risco
+                List<Vector3> pathToApproach = FindPath(transform.position, undestructibleTiles.GetCellCenterWorld(approachCell));
+                if (pathToApproach == null) continue; // Não consegue chegar lá
+
+                float timeToReach = (pathToApproach.Count - 1) / speed; // Estimativa de tempo
+                float fleeTimeMargin = 1.5f; // Tempo para fugir depois
+
+                if (bomb.RemainingTime > timeToReach + fleeTimeMargin)
+                {
+                    // Encontramos uma jogada melhor que a anterior?
+                    if (outcomeScore > highestScore)
+                    {
+                        highestScore = outcomeScore;
+                        bestApproachCell = approachCell;
+                        bestPath = pathToApproach;
+                        // Adiciona a própria bomba como passo final para forçar a colisão
+                        bestPath.Add(undestructibleTiles.GetCellCenterWorld(bombCell));
+                    }
+                }
+            }
+        }
+
+        // Passo 5: Decisão Final
+        if (bestPath != null)
+        {
+            pathQueue.Clear();
+            for (int i = 1; i < bestPath.Count; i++)
+            {
+                pathQueue.Enqueue(bestPath[i]);
+            }
+
+            isExecutingAttackPlan = true; // Usa a trava para se comprometer com a jogada
+            MoveToNextTarget();
+            return true;
+        }
+
+        return false;
+    }
+    // Adicione esta função auxiliar ao BotController.cs
+    private float ScoreKickTrajectory(Vector3Int startCell, Vector2 direction, bool isDefensive)
+    {
+        Vector3Int dirInt = new Vector3Int(Mathf.RoundToInt(direction.x), Mathf.RoundToInt(direction.y), 0);
+
+        for (int i = 1; i <= 15; i++) // Simula a trajetória por até 15 células
+        {
+            Vector3Int currentCell = startCell + (dirInt * i);
+
+            if (undestructibleTiles.HasTile(currentCell)) return 0; // Trajetória bloqueada
+
+            Collider2D[] hits = Physics2D.OverlapCircleAll(undestructibleTiles.GetCellCenterWorld(currentCell), 0.4f);
+            foreach (var hit in hits)
+            {
+                if (hit.CompareTag("Player"))
+                {
+                    // Se acertar o jogador alvo, pontuação máxima
+                    if (hit.transform == currentTarget) return 100f;
+                    // Se acertar outro jogador/bot, pontuação boa
+                    return 70f;
+                }
+            }
+
+            // No modo defensivo, chutar para um espaço vazio já é uma vitória
+            if (isDefensive && i > 2) // Chutar para longe (pelo menos 3 células)
+            {
+                // Precisamos verificar se a célula de destino está fora da zona de perigo
+                if (IsTileSafe(currentCell)) return 80f; // Pontuação defensiva alta
+            }
+
+            if (destructibleTiles.HasTile(currentCell))
+            {
+                // Atingiu um bloco destrutível, a bomba pararia aqui.
+                return 10f; // Pontuação baixa, mas pode ser útil
+            }
+        }
+
+        return 5f; // Terminou em um espaço vazio (útil em modo ofensivo para reposicionar)
+    }
+    public void AddBombToStock()
+    {
+        // Acessa a variável privada "bombsRemaining"
+        bombsRemaining++;
+    }
     private void MoveToNextTarget()
     {
         if (pathQueue.Count <= 0)
@@ -269,8 +494,21 @@ public int GetTargetCount()
 
         Vector3Int currentCell = undestructibleTiles.WorldToCell(transform.position);
 
+        Vector3Int currentBotCell = undestructibleTiles.WorldToCell(transform.position);
         Vector3 nextTarget = pathQueue.Peek();
         Vector3Int nextTargetCell = undestructibleTiles.WorldToCell(nextTarget);
+
+        // === LÓGICA DE ATAQUE ADICIONADA ===
+        if (currentTarget != null && bombsRemaining > 0)
+        {
+            Vector3Int targetPlayerCell = undestructibleTiles.WorldToCell(currentTarget.position);
+            // Se a célula atual é um bom local para bombardear o jogador, FAÇA!
+            if (CanBombHitTarget(currentBotCell, targetPlayerCell) && FindNearestSafeTile(currentBotCell) != currentBotCell)
+            {
+                StartCoroutine(PlaceBombAndFlee(currentBotCell));
+                return;
+            }
+        }
 
         if (currentCell == nextTargetCell)
         {
@@ -361,6 +599,8 @@ public int GetTargetCount()
         isMovingToTarget = false;
         moveProgress = 0f;
         rb.velocity = Vector2.zero;
+        isExecutingAttackPlan = false; // Se paramos, o plano de ataque foi cancelado.
+
         SetAnimation(activeSpriteRenderer);
 
         ForceSnapToGrid();
@@ -368,6 +608,35 @@ public int GetTargetCount()
 
     private void Update()
     {
+        // === VERIFICAÇÃO DE VALIDADE DO PLANO DE ATAQUE ===
+        if (isExecutingAttackPlan)
+        {
+            if (currentTarget == null || pathQueue.Count == 0)
+            {
+                // Se o alvo morreu ou o caminho acabou, cancela o plano
+                isExecutingAttackPlan = false;
+                StopMovement();
+            }
+            else
+            {
+                // Pega o último ponto do nosso plano de ataque (o destino final)
+                Vector3 finalDestination = pathQueue.ToArray()[pathQueue.Count - 1];
+
+                // Se o jogador se afastou muito do nosso ponto de bombardeio, o plano é ruim. Cancele.
+                if (Vector3.Distance(currentTarget.position, finalDestination) > 3f) // 3f é uma tolerância
+                {
+                    isExecutingAttackPlan = false;
+                    pathQueue.Clear(); // Limpa o caminho antigo
+                                       // Não precisa chamar StopMovement() aqui, pois o próximo UpdatePath vai gerar um novo caminho.
+                }
+            }
+        }
+        if (Time.time - lastObjectiveUpdateTime > objectiveUpdateRate)
+        {
+            lastObjectiveUpdateTime = Time.time;
+            UpdateObjectives();
+        }
+        // ===================================================
         // Avalia se deve usar special move
         specialMoveDecisionTimer += Time.deltaTime;
         if (specialMoveDecisionTimer >= specialDecisionInterval)
@@ -383,64 +652,64 @@ public int GetTargetCount()
     }
 
     private void ChooseNewTarget()
-{
-    // Remove alvos nulos da lista
-    potentialTargets.RemoveAll(target => target == null);
-
-    if (potentialTargets.Count == 0)
     {
-        currentTarget = null;
-        return;
-    }
+        // Remove alvos nulos da lista
+        potentialTargets.RemoveAll(target => target == null);
 
-    if (targetRandomly)
-    {
-        // Escolhe alvo aleatório
-        int randomIndex = Random.Range(0, potentialTargets.Count);
-        currentTarget = potentialTargets[randomIndex];
-    }
-    else
-    {
-        // Escolhe o alvo mais próximo
-        Transform closestTarget = null;
-        float closestDistance = float.MaxValue;
-
-        foreach (Transform target in potentialTargets)
+        if (potentialTargets.Count == 0)
         {
-            if (target == null) continue;
-
-            float distance = Vector3.Distance(transform.position, target.position);
-            if (distance < closestDistance)
-            {
-                closestDistance = distance;
-                closestTarget = target;
-            }
+            currentTarget = null;
+            return;
         }
 
-        currentTarget = closestTarget;
+        if (targetRandomly)
+        {
+            // Escolhe alvo aleatório
+            int randomIndex = Random.Range(0, potentialTargets.Count);
+            currentTarget = potentialTargets[randomIndex];
+        }
+        else
+        {
+            // Escolhe o alvo mais próximo
+            Transform closestTarget = null;
+            float closestDistance = float.MaxValue;
+
+            foreach (Transform target in potentialTargets)
+            {
+                if (target == null) continue;
+
+                float distance = Vector3.Distance(transform.position, target.position);
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestTarget = target;
+                }
+            }
+
+            currentTarget = closestTarget;
+        }
+
+        lastTargetSwitchTime = Time.time;
     }
 
-    lastTargetSwitchTime = Time.time;
-}
-
-public void AddTarget(Transform newTarget)
-{
-    if (newTarget != null && !potentialTargets.Contains(newTarget) && newTarget != this.transform)
+    public void AddTarget(Transform newTarget)
     {
-        potentialTargets.Add(newTarget);
+        if (newTarget != null && !potentialTargets.Contains(newTarget) && newTarget != this.transform)
+        {
+            potentialTargets.Add(newTarget);
+        }
     }
-}
 
-public void RemoveTarget(Transform targetToRemove)
-{
-    potentialTargets.Remove(targetToRemove);
-    
-    // Se removeu o alvo atual, escolhe um novo
-    if (currentTarget == targetToRemove)
+    public void RemoveTarget(Transform targetToRemove)
     {
-        ChooseNewTarget();
+        potentialTargets.Remove(targetToRemove);
+
+        // Se removeu o alvo atual, escolhe um novo
+        if (currentTarget == targetToRemove)
+        {
+            ChooseNewTarget();
+        }
     }
-}
 
     private void EvaluateSpecialMoveUsage()
     {
@@ -453,7 +722,7 @@ public void RemoveTarget(Transform targetToRemove)
             return;
 
         // Verifica se o player está próximo o suficiente
-        if (currentTarget  == null)
+        if (currentTarget == null)
             return;
 
         float distanceToPlayer = Vector3.Distance(transform.position, currentTarget.position);
@@ -476,7 +745,7 @@ public void RemoveTarget(Transform targetToRemove)
     {
         Vector3Int currentCell = undestructibleTiles.WorldToCell(transform.position);
         Vector2[] directions = { Vector2.up, Vector2.down, Vector2.left, Vector2.right };
-        
+
         Vector2 bestDirection = Vector2.zero;
         int bestScore = 0;
 
@@ -542,7 +811,7 @@ public void RemoveTarget(Transform targetToRemove)
 
         // Escolhe a animação correta baseada na direção
         AnimatedSpriteRenderer specialSprite = GetSpecialSpriteForDirection(direction);
-        
+
         // Ativa animação especial
         SetAnimation(specialSprite, true);
 
@@ -599,6 +868,7 @@ public void RemoveTarget(Transform targetToRemove)
             destructiblePrefab,
             itemDestructiblePrefab
         );
+        bomb.owner = this.gameObject;
 
         // Rajada só na direção especificada
         bomb.ExplodeInDirection(direction, bomb.explosionRadius);
@@ -625,7 +895,7 @@ public void RemoveTarget(Transform targetToRemove)
             if (moveProgress >= 1f)
             {
                 // Chegou no target
-                moveProgress = 1f;                
+                moveProgress = 1f;
                 transform.position = currentMoveTarget;
                 isMovingToTarget = false;
 
@@ -690,7 +960,7 @@ public void RemoveTarget(Transform targetToRemove)
             spriteRenderer.enabled = true;
             activeSpriteRenderer = spriteRenderer;
             activeSpriteRenderer.idle = direction == Vector2.zero;
-            
+
             if (isSpecial)
             {
                 activeSpriteRenderer.idle = false;
@@ -753,7 +1023,7 @@ public void RemoveTarget(Transform targetToRemove)
                 {
                     costSoFar[neighbor] = newCost;
                     int priority = newCost + ManhattanDistance(neighbor, targetCell);
-                    frontier.Enqueue(neighbor, priority);                    
+                    frontier.Enqueue(neighbor, priority);
                     cameFrom[neighbor] = current;
                 }
             }
@@ -835,10 +1105,24 @@ public void RemoveTarget(Transform targetToRemove)
         Invoke(nameof(OnDeathSequenceEnded), 1.25f);
     }
 
+    // Em BotController.cs e MovementController.cs
     private void OnDeathSequenceEnded()
     {
-        gameObject.SetActive(false);
-        GameManager.Instance.CheckWinState();
+        // AVISA o GameManager que morreu
+        if (GameManager.Instance != null)
+        {
+            // O GameManager irá cuidar da destruição do objeto
+            GameManager.Instance.CharacterDied(this.gameObject);
+        }
+        else
+        {
+            // Fallback caso não tenha GameManager na cena
+            Destroy(gameObject);
+        }
+        
+        // Desativa o objeto imediatamente para que ele "suma"
+        // enquanto o GameManager faz a limpeza.
+        this.gameObject.SetActive(false);
     }
 
     private void OnDrawGizmos()
@@ -900,28 +1184,28 @@ public void RemoveTarget(Transform targetToRemove)
             DrawSurroundingsGizmos(currentCell);
         }
 
-   if (currentTarget != null)
-    {
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawLine(transform.position, currentTarget.position);
-        Gizmos.DrawWireSphere(currentTarget.position, 0.5f);
-        
+        if (currentTarget != null)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawLine(transform.position, currentTarget.position);
+            Gizmos.DrawWireSphere(currentTarget.position, 0.5f);
+
 #if UNITY_EDITOR
         UnityEditor.Handles.color = Color.cyan;
         Vector3 midPoint = (transform.position + currentTarget.position) * 0.5f;
         UnityEditor.Handles.Label(midPoint, "CURRENT TARGET");
 #endif
-    }
-    
-    // Desenha todos os alvos potenciais
-    Gizmos.color = Color.yellow;
-    foreach (Transform target in potentialTargets)
-    {
-        if (target != null && target != currentTarget)
-        {
-            Gizmos.DrawWireSphere(target.position, 0.3f);
         }
-    }
+
+        // Desenha todos os alvos potenciais
+        Gizmos.color = Color.yellow;
+        foreach (Transform target in potentialTargets)
+        {
+            if (target != null && target != currentTarget)
+            {
+                Gizmos.DrawWireSphere(target.position, 0.3f);
+            }
+        }
     }
 
     // Nova função para desenhar bombas em uma célula específica
@@ -1287,6 +1571,8 @@ public void RemoveTarget(Transform targetToRemove)
 
     private IEnumerator PlaceBombAndFlee(Vector3Int destructibleCell)
     {
+        isExecutingAttackPlan = false; // O plano de "ir até o local" foi concluído. Agora estamos em modo "fuga".
+
         isPlacingBomb = true;
         StopMovement();
 
@@ -1295,6 +1581,7 @@ public void RemoveTarget(Transform targetToRemove)
         Vector3 bombPosition = undestructibleTiles.GetCellCenterWorld(currentCell);
 
         GameObject bombObj = Instantiate(bombPrefab, bombPosition, Quaternion.identity);
+        bombObj.GetComponent<Bomb>().owner = this.gameObject;
         bombsRemaining--;
         lastBombPosition = currentCell;
         bombPlacedTime = Time.time;
@@ -1800,7 +2087,154 @@ public void RemoveTarget(Transform targetToRemove)
             StartPreciseFleeFromBomb(mostDangerousBomb);
         }
     }
-    
+
+    private bool EvaluateBombPlacementOpportunity()
+    {
+        // 1. Condições básicas para não atacar
+        if (currentTarget == null || bombsRemaining <= 0 || isFleeingFromBomb || isPlacingBomb || isPerformingSpecialMove)
+        {
+            return false;
+        }
+
+        // 2. Verifica a distância para o alvo
+        float distanceToTarget = Vector3.Distance(transform.position, currentTarget.position);
+        if (distanceToTarget > 4f) // Só considera atacar se estiver a 4 tiles de distância ou menos
+        {
+            return false;
+        }
+
+        Vector3Int botCell = undestructibleTiles.WorldToCell(transform.position);
+        Vector3Int targetCell = undestructibleTiles.WorldToCell(currentTarget.position);
+
+        // 3. Se já estamos em uma boa posição, atacar imediatamente!
+        if (CanBombHitTarget(botCell, targetCell) && IsTileSafe(botCell) && FindNearestSafeTile(botCell) != botCell)
+        {
+            StartCoroutine(PlaceBombAndFlee(botCell));
+            return true; // Sucesso, iniciamos um ataque
+        }
+
+        // 4. Procurar a melhor célula adjacente ao jogador para se mover e bombardear
+        Vector3Int bestBombingSpot = FindBestBombingSpot(targetCell);
+
+        if (bestBombingSpot != new Vector3Int(int.MaxValue, int.MaxValue, int.MaxValue))
+        {
+            // Encontramos um bom lugar! Vamos criar um caminho até lá.
+            List<Vector3> pathToSpot = FindPath(transform.position, undestructibleTiles.GetCellCenterWorld(bestBombingSpot));
+
+            if (pathToSpot != null && pathToSpot.Count > 1) // Garante que há um caminho a ser percorrido
+            {
+                pathQueue.Clear();
+                // Começa do índice 1 porque o 0 é a posição atual
+                for (int i = 1; i < pathToSpot.Count; i++)
+                {
+                    pathQueue.Enqueue(pathToSpot[i]);
+                }
+
+                // === ATIVA A TRAVA DE COMPROMETIMENTO ===
+                isExecutingAttackPlan = true;
+
+                if (!isMovingToTarget)
+                {
+                    MoveToNextTarget();
+                }
+                return true; // Sucesso, estamos a caminho de um ponto de ataque
+            }
+        }
+
+        return false; // Nenhuma oportunidade de ataque encontrada
+    }
+
+    // Verifica se uma bomba em 'bombCell' pode atingir o alvo em 'targetCell'
+    private bool CanBombHitTarget(Vector3Int bombCell, Vector3Int targetCell)
+    {
+        // Se não estiver na mesma linha ou coluna, é impossível atingir
+        if (bombCell.x != targetCell.x && bombCell.y != targetCell.y)
+        {
+            return false;
+        }
+
+        int distance = ManhattanDistance(bombCell, targetCell);
+
+        // Se estiver fora do alcance da explosão
+        if (distance > explosionRadius)
+        {
+            return false;
+        }
+
+        // Verifica se há uma parede indestrutível no caminho
+        Vector3Int direction = Vector3Int.zero;
+        if (bombCell.x == targetCell.x)
+        {
+            direction.y = (targetCell.y > bombCell.y) ? 1 : -1;
+        }
+        else
+        {
+            direction.x = (targetCell.x > bombCell.x) ? 1 : -1;
+        }
+
+        for (int i = 1; i < distance; i++)
+        {
+            Vector3Int checkCell = bombCell + direction * i;
+            if (undestructibleTiles.HasTile(checkCell))
+            {
+                return false; // Caminho bloqueado
+            }
+        }
+
+        return true; // Caminho livre, pode atingir o alvo!
+    }
+
+    // Encontra o melhor local para se mover e colocar a bomba
+    private Vector3Int FindBestBombingSpot(Vector3Int targetCell)
+    {
+        Vector3Int bestSpot = new Vector3Int(int.MaxValue, int.MaxValue, int.MaxValue);
+        int bestSpotDistance = int.MaxValue;
+        Vector3Int botCell = undestructibleTiles.WorldToCell(transform.position);
+
+        Vector3Int[] directions = { Vector3Int.up, Vector3Int.down, Vector3Int.left, Vector3Int.right };
+
+        // Itera sobre as 4 células adjacentes ao alvo
+        foreach (var dir in directions)
+        {
+            Vector3Int potentialSpot = targetCell + dir;
+
+            // Condições para ser um bom local:
+            // 1. Não pode ser um obstáculo
+            // 2. O bot precisa conseguir chegar lá
+            // 3. O bot precisa ter uma rota de fuga segura a partir de lá
+            if (!IsObstacle(potentialSpot) && FindNearestSafeTile(potentialSpot) != potentialSpot)
+            {
+                int distanceToSpot = ManhattanDistance(botCell, potentialSpot);
+
+                // Escolhe o local mais próximo do bot
+                if (distanceToSpot < bestSpotDistance)
+                {
+                    // Verifica se há um caminho real até lá
+                    if (FindPath(transform.position, undestructibleTiles.GetCellCenterWorld(potentialSpot)) != null)
+                    {
+                        bestSpot = potentialSpot;
+                        bestSpotDistance = distanceToSpot;
+                    }
+                }
+            }
+        }
+        return bestSpot;
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (!canKickBomb || !collision.gameObject.CompareTag("Bomb"))
+        {
+            return;
+        }
+
+        Bomb bombScript = collision.gameObject.GetComponent<Bomb>();
+
+        if (bombScript != null && !bombScript.isKicked)
+        {
+            // A direção é o movimento atual do bot, que o levou à colisão
+            bombScript.Kick(direction);
+        }
+    }
     // === VERSÃO APRIMORADA PARA MÚLTIPLAS BOMBAS ===
     private void CheckMultipleBombDanger()
     {

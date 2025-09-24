@@ -187,7 +187,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   potentialTargets: []
-  targetSwitchInterval: 3
+  targetSwitchInterval: 30
   targetRandomly: 1
   undestructibleTiles: {fileID: 1204104577}
   destructibleTiles: {fileID: 848739280}
@@ -1975,6 +1975,10 @@ PrefabInstance:
       propertyPath: undestructibleTiles
       value: 
       objectReference: {fileID: 1204104577}
+    - target: {fileID: 4122707902159260859, guid: c799285debe11684dbdc7fbb173a30c9, type: 3}
+      propertyPath: targetSwitchInterval
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 4122707902159260860, guid: c799285debe11684dbdc7fbb173a30c9, type: 3}
       propertyPath: destructibleTiles
       value: 
@@ -2267,6 +2271,10 @@ PrefabInstance:
       propertyPath: undestructibleTiles
       value: 
       objectReference: {fileID: 1204104577}
+    - target: {fileID: 8452276615360509521, guid: 5fb970e83ef010c43ba082ea83067618, type: 3}
+      propertyPath: targetSwitchInterval
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 8452276615360509532, guid: 5fb970e83ef010c43ba082ea83067618, type: 3}
       propertyPath: destructibleTiles
       value: 
