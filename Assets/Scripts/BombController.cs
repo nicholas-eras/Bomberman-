@@ -58,8 +58,9 @@ public class BombController : MonoBehaviour
         // inicializa a bomba
         Bomb bomb = bombObj.GetComponent<Bomb>();
         bomb.Init(bombFuseTime, explosionRadius, explosionDuration, explosionPrefab,
-                explosionLayerMask, destructibleTiles, undestructibleTiles,
-                destructiblePrefab, itemDestructiblePrefab);
+                    explosionLayerMask, destructibleTiles, undestructibleTiles,
+                    destructiblePrefab, itemDestructiblePrefab, this.gameObject); // Adicione este parâmetro
+
 
         // espera até a bomba ser destruída
         while (bombObj != null)

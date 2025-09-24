@@ -155,26 +155,41 @@ private IEnumerator DoSpecialExplosion(Vector2 dir, AnimatedSpriteRenderer speci
         this.SetAnimation(spriteRenderer);
     }
 
-    private void SetAnimation(AnimatedSpriteRenderer spriteRenderer, bool isSpecial = false)
-    {
-        this.spriteRendererUp.enabled = spriteRenderer == this.spriteRendererUp;
-        this.spriteRendererDown.enabled = spriteRenderer == this.spriteRendererDown;
-        this.spriteRendererLeft.enabled = spriteRenderer == this.spriteRendererLeft;
-        this.spriteRendererRight.enabled = spriteRenderer == this.spriteRendererRight;
-        this.spriteSpecialMove.enabled = spriteRenderer == this.spriteSpecialMove;
-        this.spriteSpecialMoveUp.enabled = spriteRenderer == this.spriteSpecialMoveUp;
-        this.spriteSpecialMoveDown.enabled = spriteRenderer == this.spriteSpecialMoveDown;
-        this.spriteSpecialMoveRight.enabled = spriteRenderer == this.spriteSpecialMoveRight;
-        this.spriteSpecialMoveLeft.enabled = spriteRenderer == this.spriteSpecialMoveLeft;
+    // Dentro de MovementController.cs
+private void SetAnimation(AnimatedSpriteRenderer spriteRenderer, bool isSpecial = false)
+{
+    // Desativa todos os renderers primeiro
+    this.spriteRendererUp.enabled = false;
+    this.spriteRendererDown.enabled = false;
+    this.spriteRendererLeft.enabled = false;
+    this.spriteRendererRight.enabled = false;
+    this.spriteSpecialMove.enabled = false;
+    this.spriteSpecialMoveUp.enabled = false;
+    this.spriteSpecialMoveDown.enabled = false;
+    this.spriteSpecialMoveRight.enabled = false;
+    this.spriteSpecialMoveLeft.enabled = false;
 
-        this.activeSpriteRenderer = spriteRenderer;
-        this.activeSpriteRenderer.idle = this.direction == Vector2.zero;
-        if (isSpecial)
+    // --- LÓGICA CORRIGIDA ---
+    // Se a direção for zero E não for um special, ficamos parados (idle).
+    if (this.direction == Vector2.zero && !isSpecial)
+    {
+        if (this.activeSpriteRenderer != null)
         {
-            this.activeSpriteRenderer.idle = false;
-            this.activeSpriteRenderer.RestartAnimation(); // 🔑 resetar sempre que começar especial
+            this.activeSpriteRenderer.enabled = true;
+            // Em vez de 'activeSpriteRenderer.idle = true', chamamos o novo método.
+            this.activeSpriteRenderer.SetIdleSprite();
         }
     }
+    else // Se estamos nos movendo OU é um special, ativamos a animação.
+    {
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.enabled = true;
+            this.activeSpriteRenderer = spriteRenderer;
+            this.activeSpriteRenderer.RestartAnimation();
+        }
+    }
+}
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -251,7 +266,8 @@ private IEnumerator DoSpecialExplosion(Vector2 dir, AnimatedSpriteRenderer speci
             destructibleTiles,
             undestructibleTiles,
             destructiblePrefab,
-            itemDestructiblePrefab
+            itemDestructiblePrefab,
+             this.gameObject
         );
         bomb.owner = this.gameObject;
 

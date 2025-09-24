@@ -12,7 +12,13 @@ public class AnimatedSpriteRenderer : MonoBehaviour
     private int animationFrame;
 
     public bool loop = true;
-    public bool idle = true;
+
+    // === ADICIONADO: Propriedade para calcular a duração total ===
+    public float TotalAnimationDuration
+    {
+        get { return animationSprites.Length * animationTime; }
+    }
+    // ==========================================================
 
     private void Awake()
     {
@@ -22,39 +28,43 @@ public class AnimatedSpriteRenderer : MonoBehaviour
     private void OnEnable()
     {
         spriteRenderer.enabled = true;
+        CancelInvoke();
+        InvokeRepeating(nameof(NextFrame), animationTime, animationTime);
     }
 
     private void OnDisable()
     {
         spriteRenderer.enabled = false;
-    }
-
-    private void Start()
-    {
-        InvokeRepeating(nameof(NextFrame), animationTime, animationTime);
+        CancelInvoke();
     }
 
     private void NextFrame()
     {
+        if (animationSprites == null || animationSprites.Length == 0) return;
+
         animationFrame++;
 
-        if (loop && animationFrame >= animationSprites.Length)
-        {
+        if (loop && animationFrame >= animationSprites.Length) {
             animationFrame = 0;
         }
 
-        if (idle)
-        {
-            spriteRenderer.sprite = idleSprite;
-        }
-        else if (animationFrame >= 0 && animationFrame < animationSprites.Length)
-        {
+        if (animationFrame >= 0 && animationFrame < animationSprites.Length) {
             spriteRenderer.sprite = animationSprites[animationFrame];
         }
     }
     
     public void RestartAnimation()
     {
-        animationFrame = -1; // começa do início
+        animationFrame = -1;
+        NextFrame();
+    }
+
+    // NOVO MÉTODO: Para o controlador definir o sprite de 'idle'
+    public void SetIdleSprite()
+    {
+        if (idleSprite != null) {
+            spriteRenderer.sprite = idleSprite;
+        }
+        CancelInvoke();
     }
 }

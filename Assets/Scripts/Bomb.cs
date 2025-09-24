@@ -31,8 +31,10 @@ public class Bomb : MonoBehaviour
     public float moveSpeed = 20f;
     private Vector2 playerPosition;
     private IEnumerator fuseCoroutine;
-    public GameObject owner; // Quem colocou a bomba
     [HideInInspector] public bool isKicked = false;
+    [HideInInspector]
+    public GameObject owner; // Guardará quem colocou a bomba
+    private Collider2D bombCollider; // Referência ao collider da bomba
 
     public void Init(
         float fuseTime,
@@ -43,7 +45,8 @@ public class Bomb : MonoBehaviour
         Tilemap destructibleTiles,
         Tilemap undestructibleTiles,
         Destructible destructiblePrefab,
-        Destructible itemDestructiblePrefab
+        Destructible itemDestructiblePrefab,
+        GameObject owner // Novo parâmetro
     )
     {
         this.fuseTime = fuseTime;
@@ -55,7 +58,12 @@ public class Bomb : MonoBehaviour
         this.undestructibleTiles = undestructibleTiles;
         this.destructiblePrefab = destructiblePrefab;
         this.itemDestructiblePrefab = itemDestructiblePrefab;
-
+        this.owner = owner; // Guarda o "dono"
+        bombCollider = GetComponent<Collider2D>();
+        if (bombCollider != null)
+        {
+            bombCollider.isTrigger = true;
+        }
         rb = GetComponent<Rigidbody2D>();
 
         // === INICIALIZA SISTEMA DE TIMING ===
@@ -118,11 +126,23 @@ public class Bomb : MonoBehaviour
             }
         }
     }
+    
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        // A bomba só se torna sólida DEPOIS que seu "dono" (quem a colocou) sair de cima dela.
+        if (other.gameObject == owner)
+        {
+            if (bombCollider != null)
+            {
+                bombCollider.isTrigger = false;
+            }
+        }
+    }
 
     private IEnumerator ExplodeAfterDelay()
     {
         yield return new WaitForSeconds(fuseTime);
-        
+
         if (!IsExploded) // Só explode se não foi detonada antes
         {
             Explode();
